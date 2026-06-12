@@ -1,0 +1,56 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Tests\Browser;
+
+use Facebook\WebDriver\Chrome\ChromeOptions;
+use Facebook\WebDriver\Remote\DesiredCapabilities;
+use Facebook\WebDriver\Remote\RemoteWebDriver;
+use Laravel\Dusk\TestCase as BaseTestCase;
+
+/**
+ * Bindle's Dusk lifecycle. Bindle's Artisan commands instantiate this case
+ * to drive Chrome — you only need to ensure ChromeDriver is reachable
+ * (php artisan dusk:chrome-driver).
+ */
+abstract class BindleDuskTestCase extends BaseTestCase
+{
+    public static function prepare(): void
+    {
+        if (! static::runningInSail()) {
+            static::startChromeDriver(['--port=9515']);
+        }
+    }
+
+    protected function driver(): RemoteWebDriver
+    {
+        $options = (new ChromeOptions())->addArguments(collect([
+            $this->shouldStartMaximized() ? '--start-maximized' : '--window-size=1440,900',
+            '--disable-search-engine-choice-screen',
+            '--disable-smooth-scrolling',
+        ])->unless($this->hasHeadlessDisabled(), function ($items) {
+            return $items->merge([
+                '--disable-gpu',
+                '--headless=new',
+            ]);
+        })->all());
+
+        return RemoteWebDriver::create(
+            $_ENV['DUSK_DRIVER_URL'] ?? env('DUSK_DRIVER_URL') ?? 'http://localhost:9515',
+            DesiredCapabilities::chrome()->setCapability(ChromeOptions::CAPABILITY, $options),
+        );
+    }
+
+    protected function hasHeadlessDisabled(): bool
+    {
+        return isset($_SERVER['DUSK_HEADLESS_DISABLED']) ||
+               isset($_ENV['DUSK_HEADLESS_DISABLED']);
+    }
+
+    protected function shouldStartMaximized(): bool
+    {
+        return isset($_SERVER['DUSK_START_MAXIMIZED']) ||
+               isset($_ENV['DUSK_START_MAXIMIZED']);
+    }
+}

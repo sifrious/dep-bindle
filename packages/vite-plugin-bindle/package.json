@@ -1,0 +1,18 @@
+{
+  "name": "maryeperry-vite-plugin-bindle",
+  "version": "0.1.0",
+  "description": "Vite plugin that parses Vue/React/Svelte components and emits a Bindle manifest for the Laravel package to consume.",
+  "main": "index.js",
+  "type": "module",
+  "keywords": ["vite", "laravel", "bindle", "vue", "react", "svelte"],
+  "author": "Mary Perry <mmebyte@gmail.com>",
+  "license": "MIT",
+  "peerDependencies": {
+    "vite": "^4 || ^5 || ^6"
+  },
+  "dependencies": {
+    "@babel/parser": "^7.24.0",
+    "@vue/compiler-sfc": "^3.4.0",
+    "svelte": "^4.2.0 || ^5.0.0"
+  }
+}

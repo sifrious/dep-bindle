@@ -9,8 +9,16 @@
         </include>
     </source>
     <testsuites>
-        <testsuite name="default">
-            <directory suffix=".php">./tests</directory>
+        <testsuite name="Unit">
+            <directory suffix=".php">./tests/Unit</directory>
+        </testsuite>
+        <testsuite name="Feature">
+            <directory suffix=".php">./tests/Feature</directory>
         </testsuite>
     </testsuites>
+    <php>
+        <env name="APP_ENV" value="testing"/>
+        <env name="APP_DEBUG" value="true"/>
+        <env name="BINDLE_ENABLED" value="true"/>
+    </php>
 </phpunit>
