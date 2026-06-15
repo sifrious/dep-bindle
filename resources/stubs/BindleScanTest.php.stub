@@ -1,0 +1,55 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Tests\Browser;
+
+use Laravel\Dusk\Browser;
+use Maryeperry\Bindle\Browser\DuskBrowserDriver;
+use Maryeperry\Bindle\Pipeline\ScanPipeline;
+use Tests\DuskTestCase;
+
+/**
+ * Bindle's real-browser scan. This is the entry point that actually takes
+ * full-page screenshots: it boots Chrome through Laravel Dusk, walks every
+ * enumerated route, and feeds the captured screenshot + rendered DOM into
+ * Bindle's ScanPipeline.
+ *
+ * Run it directly:
+ *     php artisan dusk tests/Browser/BindleScanTest.php
+ *
+ * …or via the convenience wrapper, which shells out to the command above:
+ *     php artisan bindle:scan --driver=dusk
+ *
+ * Prerequisites:
+ *   1. `php artisan dusk:install` has been run (provides Tests\DuskTestCase).
+ *   2. ChromeDriver is installed — `php artisan dusk:chrome-driver --detect`.
+ *   3. Your app is reachable at config('app.url'), e.g. `php artisan serve`.
+ *
+ * Without this test (or with `--driver=null`), `bindle:scan` still runs, but
+ * uses a no-op browser that writes placeholder PNGs and empty DOM — useful
+ * for the static component/markdown phases, useless for screenshots.
+ */
+class BindleScanTest extends DuskTestCase
+{
+    public function test_bindle_captures_every_page(): void
+    {
+        /** @var ScanPipeline $pipeline */
+        $pipeline = app(ScanPipeline::class);
+
+        $this->browse(function (Browser $browser) use ($pipeline): void {
+            // Optionally authenticate before the crawl so guarded routes
+            // render their real content. Configure via BINDLE_AUTH_USER_ID.
+            $userId = config('bindle.auth.user_id');
+            if ($userId !== null && $userId !== '') {
+                $browser->loginAs($userId, (string) config('bindle.auth.guard', 'web'));
+            }
+
+            $run = $pipeline->run(new DuskBrowserDriver(fn () => $browser));
+
+            $this->assertSame('completed', $run->status, 'Bindle scan did not complete.');
+
+            fwrite(STDOUT, PHP_EOL."Bindle scan completed (run #{$run->id}). Output: ".config('bindle.output_path').PHP_EOL);
+        });
+    }
+}

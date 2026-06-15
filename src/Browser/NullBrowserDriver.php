@@ -22,12 +22,13 @@ final class NullBrowserDriver implements BrowserDriver
         return $clone;
     }
 
-    public function capture(string $url, int $width, int $height, string $screenshotPath): string
+    public function capture(string $url, int $width, int $height, string $screenshotPath): CapturedResponse
     {
         // 1x1 transparent PNG so on-disk paths still resolve.
         $png = base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkAAIAAAoAAv/lxKUAAAAASUVORK5CYII=');
         @file_put_contents($screenshotPath, $png);
 
-        return $this->stubHtml;
+        // No real navigation: report that we landed exactly where asked.
+        return new CapturedResponse($this->stubHtml, $url, 200);
     }
 }

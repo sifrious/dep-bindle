@@ -88,7 +88,7 @@ final class BindleServiceProvider extends ServiceProvider
         ], 'bindle-config');
 
         $this->publishes([
-            __DIR__.'/../resources/stubs/BindleDuskTestCase.php.stub' => base_path('tests/Browser/BindleDuskTestCase.php'),
+            __DIR__.'/../resources/stubs/BindleScanTest.php.stub' => base_path('tests/Browser/BindleScanTest.php'),
         ], 'bindle-dusk');
 
         if ($this->app->runningInConsole()) {

@@ -39,6 +39,7 @@ final class PageRecorder
         $outputPath = (string) $this->config->get('bindle.output_path', '');
         $screenshots = [];
         $html = '';
+        $firstResponse = null;
 
         foreach ($viewports as $viewport) {
             $label = (string) ($viewport['label'] ?? 'default');
@@ -56,8 +57,9 @@ final class PageRecorder
             try {
                 $captured = $this->driver->capture($url, $w, $h, $screenshotPath);
                 $screenshots[$label] = $screenshotPath;
-                if ($html === '') {
-                    $html = $captured;
+                if ($firstResponse === null) {
+                    $firstResponse = $captured;
+                    $html = $captured->html;
                 }
             } catch (\Throwable $e) {
                 $this->errors->error(ErrorLogger::PHASE_RENDER, "Failed to capture [{$url}] at viewport [{$label}]: {$e->getMessage()}", [
@@ -71,12 +73,68 @@ final class PageRecorder
             return null;
         }
 
+        if ($firstResponse !== null) {
+            $this->flagSuspiciousResponse($route, $url, $firstResponse);
+        }
+
         return new CapturedPage(
             url: $url,
             html: $html,
             screenshotPaths: $screenshots,
             htmlHash: hash('xxh3', $html),
         );
+    }
+
+    /**
+     * Turn the two silent failure modes — an auth redirect to /login, or a
+     * 4xx/5xx page rendered in place — into visible warnings. The screenshot
+     * is still kept; this just stops the captured login/error page from
+     * masquerading as the route's real content without anyone noticing.
+     */
+    private function flagSuspiciousResponse(ResolvedRoute $route, string $requestedUrl, CapturedResponse $response): void
+    {
+        $requestedPath = $this->pathOf($requestedUrl);
+        $finalPath = $this->pathOf($response->finalUrl);
+
+        if ($finalPath !== $requestedPath) {
+            $loginPath = $this->pathOf((string) $this->config->get('bindle.auth.login_path', '/login'));
+
+            $message = $finalPath === $loginPath
+                ? "Route [{$route->identifier()}] redirected to the login page — it is behind auth and Bindle is not signed in. Set BINDLE_AUTH_USER_ID. The captured screenshot/DOM is the login page, not this route."
+                : "Route [{$route->identifier()}] redirected from [{$requestedPath}] to [{$finalPath}] — the captured screenshot/DOM is the redirect target, not this route.";
+
+            $this->errors->warn(ErrorLogger::PHASE_RENDER, $message, [
+                'route' => $route->identifier(),
+                'requested_url' => $requestedUrl,
+                'final_url' => $response->finalUrl,
+            ]);
+
+            return;
+        }
+
+        if ($response->status !== null && ($response->status < 200 || $response->status >= 300)) {
+            $this->errors->warn(ErrorLogger::PHASE_RENDER, "Route [{$route->identifier()}] returned HTTP {$response->status} — the captured screenshot/DOM is an error page, not this route's content.", [
+                'route' => $route->identifier(),
+                'url' => $requestedUrl,
+                'status' => $response->status,
+            ]);
+        }
+    }
+
+    /**
+     * Normalize a URL (or bare path) to a comparable path: no scheme/host,
+     * no query/fragment, no trailing slash, leading slash guaranteed.
+     */
+    private function pathOf(string $url): string
+    {
+        $path = parse_url($url, PHP_URL_PATH);
+        if (! is_string($path) || $path === '') {
+            $path = '/';
+        }
+
+        $path = '/'.ltrim($path, '/');
+
+        return $path === '/' ? '/' : rtrim($path, '/');
     }
 
     private function resolveUrl(ResolvedRoute $route): ?string

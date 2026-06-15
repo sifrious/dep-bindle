@@ -29,6 +29,15 @@ final class Environment
 
         $pattern = (string) $this->config->get('bindle.production_host_pattern', '');
         if ($pattern !== '') {
+            // Accept both a fully delimited regex ("/pinkary\.com/i") and a
+            // bare host pattern ("pinkary\.com"). preg_match needs delimiters,
+            // so if the value isn't already a valid pattern, wrap it — otherwise
+            // a natural-looking value would silently match nothing and the
+            // production guard would never fire.
+            if (@preg_match($pattern, '') === false) {
+                $pattern = '#'.$pattern.'#i';
+            }
+
             $host = (string) parse_url((string) $this->config->get('app.url', ''), PHP_URL_HOST);
             if ($host !== '' && @preg_match($pattern, $host) === 1) {
                 throw ProductionForbiddenException::forProductionHost($host);

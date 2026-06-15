@@ -11,7 +11,7 @@ composer require --dev maryeperry/bindle
 php artisan bindle:install
 ```
 
-`bindle:install` publishes `config/bindle.php` and a stub `tests/Browser/BindleDuskTestCase.php`. If you use any JS framework (Vue/React/Svelte), also install the Vite companion:
+`bindle:install` publishes `config/bindle.php` and `tests/Browser/BindleScanTest.php` (the real-browser scan, see [Screenshots](#screenshots-real-browser)). If you use any JS framework (Vue/React/Svelte), also install the Vite companion:
 
 ```bash
 npm install --save-dev maryeperry-vite-plugin-bindle
@@ -29,12 +29,68 @@ The plugin emits `public/build/bindle-manifest.json` during your normal `npm run
 ## Usage
 
 ```bash
-php artisan bindle:scan                  # full scan
+php artisan bindle:scan                  # static scan (no real screenshots — see below)
+php artisan bindle:scan --driver=dusk    # full scan WITH real screenshots (drives Chrome)
 php artisan bindle:scan --only=markdown  # regenerate just the .md files
 php artisan bindle:scan --fresh          # wipe prior data first
 php artisan bindle:errors                # tabular dump of the errors table
 php artisan bindle:reset                 # wipe SQLite + output directory
 ```
+
+> **Heads-up:** plain `bindle:scan` uses a **no-op browser**. The route, component,
+> and Markdown phases all run, but the page screenshots are 1×1 placeholders and the
+> rendered DOM is empty (so DOM-derived data like Alpine bindings won't be found).
+> For real screenshots you must use `--driver=dusk` — see [Screenshots](#screenshots-real-browser).
+
+### Screenshots (real browser)
+
+> **Full setup walkthrough — including environment variables, pointing Dusk at a
+> local server, and troubleshooting — lives in [docs/SETUP.md](docs/SETUP.md).**
+> The summary below is the short version.
+
+Real screenshots are taken by driving Chrome through **Laravel Dusk**. Dusk owns its
+own bootstrapping, so Bindle ships the work as a published Dusk test
+(`tests/Browser/BindleScanTest.php`) and runs it for you.
+
+One-time setup:
+
+```bash
+composer require --dev laravel/dusk
+php artisan dusk:install              # creates tests/DuskTestCase.php (the base BindleScanTest extends)
+php artisan dusk:chrome-driver --detect
+php artisan bindle:install            # publishes tests/Browser/BindleScanTest.php
+```
+
+Then, with your app actually serving (Dusk visits real URLs):
+
+```bash
+php artisan serve                     # in one terminal — app must be reachable at APP_URL
+php artisan bindle:scan --driver=dusk # in another
+```
+
+`--driver=dusk` shells out to `php artisan dusk tests/Browser/BindleScanTest.php`. You can
+run that command directly if you prefer.
+
+**Authenticated pages.** Routes behind `auth` only render their real content if Bindle
+logs in first. Set the user in `config/bindle.php` (or env):
+
+```dotenv
+BINDLE_AUTH_USER_ID=1
+BINDLE_AUTH_GUARD=web
+BINDLE_LOGIN_PATH=/login   # where guests get redirected (used for the warning below)
+```
+
+`BindleScanTest` calls `$browser->loginAs(...)` with these before crawling.
+
+If a route still redirects to the login page (or anywhere else), or renders a 4xx/5xx
+page in place, Bindle **logs a warning** rather than silently saving the wrong screenshot.
+Check it with `php artisan bindle:errors` — you'll see entries like
+*"Route [dashboard] redirected to the login page — set BINDLE_AUTH_USER_ID"*. The
+screenshot is still written, but the warning tells you it isn't the page you wanted.
+
+**Parameterized routes.** Routes with model-bound parameters (`/users/{user}`) are skipped
+unless you supply values in `bindle.fixtures`, e.g. `'users.show' => ['user' => 1]`. Skips
+are logged — see `php artisan bindle:errors`.
 
 Output lands under `.bindle/output/`:
 

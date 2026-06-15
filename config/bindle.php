@@ -19,9 +19,12 @@ return [
     'enabled' => env('BINDLE_ENABLED', env('APP_ENV') !== 'production'),
 
     /*
-    | An optional regex applied to the host portion of `app.url`. If the host
-    | matches, Bindle aborts even if `APP_ENV` is not "production". This
+    | An optional pattern matched against the host portion of `app.url`. If the
+    | host matches, Bindle aborts even if `APP_ENV` is not "production" — this
     | catches misconfigured environments that point at a production host.
+    |
+    | Accepts either a bare host pattern ("pinkary\.com") or a fully delimited
+    | regex ("/pinkary\.com$/i"); a bare value is wrapped automatically.
     */
     'production_host_pattern' => env('BINDLE_PROD_HOSTS', ''),
 
@@ -68,6 +71,13 @@ return [
         'user_id' => env('BINDLE_AUTH_USER_ID'),
         'user_model' => env('BINDLE_AUTH_USER_MODEL'),
         'guard' => env('BINDLE_AUTH_GUARD', 'web'),
+
+        /*
+        | Path that auth middleware redirects guests to. When a scanned route
+        | redirects here, Bindle logs a warning that it captured the login
+        | page instead of the route (set `user_id` above to fix it).
+        */
+        'login_path' => env('BINDLE_LOGIN_PATH', '/login'),
     ],
 
     /*

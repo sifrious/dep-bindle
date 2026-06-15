@@ -124,7 +124,7 @@ final class ScanPipeline
 
         // ── Step 7: markdown ────────────────────────────────────────────────
         if ($doAll || in_array('markdown', $only, true)) {
-            $run->refresh()->load(['pages.pageComponents.component', 'components.props']);
+            $run->refresh()->load(['pages.pageComponents.component', 'components.props', 'components.variants']);
             $this->markdown->generate($run, $renderedHtmlByPageId);
         }
 
