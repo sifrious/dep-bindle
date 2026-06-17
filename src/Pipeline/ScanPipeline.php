@@ -59,8 +59,9 @@ final class ScanPipeline
 
     /**
      * @param  array<string>  $only  one or more of: routes, screenshots, components, markdown
+     * @param  string|null  $routeFilter  restrict the scan to a single route (matched by name, uri, or identifier)
      */
-    public function run(?BrowserDriver $driver = null, array $only = [], bool $fresh = false): Run
+    public function run(?BrowserDriver $driver = null, array $only = [], bool $fresh = false, ?string $routeFilter = null): Run
     {
         $this->env->assertSafe();
         $this->db->ensureSchema();
@@ -81,6 +82,14 @@ final class ScanPipeline
         $doAll = $only === [];
 
         $resolvedRoutes = $this->routes->enumerate();
+        if ($routeFilter !== null) {
+            $resolvedRoutes = array_values(array_filter(
+                $resolvedRoutes,
+                fn (ResolvedRoute $r): bool => $r->name === $routeFilter
+                    || $r->uri === $routeFilter
+                    || $r->identifier() === $routeFilter,
+            ));
+        }
         $pageRecorder = new PageRecorder($this->config, $driver, $this->errors);
 
         /** @var array<int, string> $renderedHtmlByPageId */

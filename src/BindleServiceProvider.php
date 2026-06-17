@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace Maryeperry\Bindle;
 
 use Illuminate\Contracts\Config\Repository;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Maryeperry\Bindle\Console\Commands\BindleErrorsCommand;
 use Maryeperry\Bindle\Console\Commands\BindleInstallCommand;
 use Maryeperry\Bindle\Console\Commands\BindleResetCommand;
 use Maryeperry\Bindle\Console\Commands\BindleScanCommand;
 use Maryeperry\Bindle\Generators\MarkdownGenerator;
+use Maryeperry\Bindle\Http\Middleware\EnsureLocalAndEnabled;
 use Maryeperry\Bindle\Phrases\Dictionary;
 use Maryeperry\Bindle\Pipeline\ScanPipeline;
 use Maryeperry\Bindle\Routes\RouteEnumerator;
@@ -99,5 +101,29 @@ final class BindleServiceProvider extends ServiceProvider
                 BindleErrorsCommand::class,
             ]);
         }
+
+        // Views are namespaced so they're always renderable (e.g. in tests);
+        // the routes that use them are gated below.
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'bindle');
+
+        // The web admin panel is local-only AND opt-in. boot() already returns
+        // early in production, so these routes simply never exist there.
+        if ($this->app->environment('local') && (bool) config('bindle.panel.enabled')) {
+            $this->registerPanelRoutes();
+        }
+    }
+
+    private function registerPanelRoutes(): void
+    {
+        Route::group([
+            'prefix' => (string) config('bindle.panel.path', '_bindle'),
+            'middleware' => array_merge(
+                (array) config('bindle.panel.middleware', ['web']),
+                [EnsureLocalAndEnabled::class],
+            ),
+            'as' => 'bindle.panel.',
+        ], function (): void {
+            $this->loadRoutesFrom(__DIR__.'/../routes/panel.php');
+        });
     }
 }

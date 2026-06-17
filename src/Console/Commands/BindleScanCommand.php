@@ -14,6 +14,7 @@ final class BindleScanCommand extends Command
 {
     protected $signature = 'bindle:scan
                             {--only= : Limit phases: comma-separated routes,screenshots,components,markdown}
+                            {--route= : Scan only the route with this name or URI}
                             {--fresh : Wipe prior run data before scanning}
                             {--driver=null : null|dusk — which browser driver to use}';
 
@@ -42,8 +43,11 @@ final class BindleScanCommand extends Command
 
         $only = array_values(array_filter(array_map('trim', explode(',', (string) $this->option('only')))));
 
+        $route = $this->option('route');
+        $route = $route !== null && $route !== '' ? (string) $route : null;
+
         $this->info('Starting Bindle scan (null driver — no real screenshots)...');
-        $run = $pipeline->run(new NullBrowserDriver, $only, (bool) $this->option('fresh'));
+        $run = $pipeline->run(new NullBrowserDriver, $only, (bool) $this->option('fresh'), $route);
         $this->info("Bindle scan completed (run #{$run->id}). Output: ".config('bindle.output_path'));
 
         return self::SUCCESS;

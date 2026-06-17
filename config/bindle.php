@@ -29,6 +29,19 @@ return [
     'production_host_pattern' => env('BINDLE_PROD_HOSTS', ''),
 
     /*
+    | Local-only web admin panel. This is OFF by default — even installing
+    | Bindle never exposes a web surface unless you opt in. On top of this
+    | flag, the panel routes are ONLY registered when APP_ENV is exactly
+    | "local"; production/staging never get the panel regardless of config.
+    */
+    'panel' => [
+        'enabled' => env('BINDLE_PANEL_ENABLED', false),
+        'path' => env('BINDLE_PANEL_PATH', '_bindle'),
+        'middleware' => ['web'],
+        'poll_seconds' => (int) env('BINDLE_PANEL_POLL', 2),
+    ],
+
+    /*
     | All Bindle output (Markdown, screenshots, SQLite DB) lives here.
     */
     'output_path' => env('BINDLE_OUTPUT_PATH', base_path('.bindle/output')),

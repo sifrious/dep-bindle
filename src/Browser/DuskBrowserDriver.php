@@ -23,7 +23,7 @@ use Laravel\Dusk\Browser;
 final class DuskBrowserDriver implements BrowserDriver
 {
     public function __construct(
-        /** @var Closure(): mixed */
+        /** @var Closure(): Browser */
         private readonly Closure $browserFactory,
     ) {}
 

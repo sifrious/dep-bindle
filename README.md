@@ -42,6 +42,40 @@ php artisan bindle:reset                 # wipe SQLite + output directory
 > rendered DOM is empty (so DOM-derived data like Alpine bindings won't be found).
 > For real screenshots you must use `--driver=dusk` — see [Screenshots](#screenshots-real-browser).
 
+You can also scan a single route instead of the whole app:
+
+```bash
+php artisan bindle:scan --route=dashboard   # by route name
+php artisan bindle:scan --route=/users       # or by URI
+```
+
+## Admin panel (local only)
+
+Bindle ships an optional web panel that lists every route and component on one
+page and gives you buttons to trigger a **full scan** or a **single-page scan** —
+each runs `bindle:scan` in the background while a status page polls for completion.
+
+It is **off by default** and only ever registers its routes when `APP_ENV=local`.
+Turn it on in `.env`:
+
+```dotenv
+BINDLE_PANEL_ENABLED=true
+```
+
+Then visit **`/_bindle`**. Configuration lives in the `panel` block of
+`config/bindle.php` (publishable via `php artisan vendor:publish --tag=bindle-config`):
+
+| Key (env) | Default | Purpose |
+|---|---|---|
+| `panel.enabled` (`BINDLE_PANEL_ENABLED`) | `false` | Master switch. Even when `true`, the panel only mounts in `local`. |
+| `panel.path` (`BINDLE_PANEL_PATH`) | `_bindle` | URL prefix for the panel. |
+| `panel.middleware` | `['web']` | Middleware stack; `EnsureLocalAndEnabled` (a 404 gate) is always appended. |
+| `panel.poll_seconds` (`BINDLE_PANEL_POLL`) | `2` | Status-page refresh interval while a scan runs. |
+
+The panel is gated three ways: the provider only registers the routes in `local`
+with the flag on, a request-time middleware re-checks and returns **404** otherwise,
+and `ScanRunner` calls `Environment::assertSafe()` before spawning any scan.
+
 ### Screenshots (real browser)
 
 > **Full setup walkthrough — including environment variables, pointing Dusk at a
@@ -129,6 +163,8 @@ Three independent guards have to fail for Bindle to run:
 1. The service provider's `register()` is a no-op when `app.environment() === 'production'`.
 2. Every Artisan command calls `Environment::assertSafe()` first, which throws `ProductionForbiddenException` on `production`, on `bindle.enabled=false`, or when `app.url`'s host matches `bindle.production_host_pattern`.
 3. The published config seeds `'enabled' => env('APP_ENV') !== 'production'`.
+
+The [admin panel](#admin-panel-local-only) is stricter still: its routes only mount when `APP_ENV` is exactly `local` **and** `bindle.panel.enabled` is true, with a request-time middleware that 404s anything else.
 
 ## Development
 

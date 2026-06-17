@@ -130,6 +130,30 @@ pages to render meaningfully.
 
 ---
 
+## Static analysis (PHPStan / Larastan)
+
+`bindle:install` publishes a PHP file into your app at `tests/Browser/BindleScanTest.php`.
+This only matters if your static analysis covers `tests/`:
+
+- **Most setups don't.** The default Larastan config analyzes `app/` (and often `config`,
+  `routes`, etc.) but not `tests/`, so the published test is never analyzed.
+- **The published test is written to pass PHPStan and Larastan at `level: max`**, so if your
+  analysis *does* include `tests/`, it should be clean out of the box.
+
+If a stricter or older analyzer configuration still flags the file, exclude it:
+
+```neon
+# phpstan.neon
+parameters:
+    excludePaths:
+        - tests/Browser/BindleScanTest.php
+```
+
+Note: this is purely about the host app's analysis of its own `tests/`. Bindle's own
+`phpstan` run is internal to the package — installing Bindle never adds it to your build.
+
+---
+
 ## Troubleshooting
 
 | Symptom | Cause / fix |

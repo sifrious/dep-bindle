@@ -40,16 +40,20 @@ class BindleScanTest extends DuskTestCase
         $this->browse(function (Browser $browser) use ($pipeline): void {
             // Optionally authenticate before the crawl so guarded routes
             // render their real content. Configure via BINDLE_AUTH_USER_ID.
+            // config() returns mixed, so narrow the types before use.
             $userId = config('bindle.auth.user_id');
-            if ($userId !== null && $userId !== '') {
-                $browser->loginAs($userId, (string) config('bindle.auth.guard', 'web'));
+            if ((is_int($userId) || is_string($userId)) && $userId !== '') {
+                $guard = config('bindle.auth.guard', 'web');
+                $browser->loginAs((string) $userId, is_string($guard) ? $guard : 'web');
             }
 
             $run = $pipeline->run(new DuskBrowserDriver(fn () => $browser));
 
             $this->assertSame('completed', $run->status, 'Bindle scan did not complete.');
 
-            fwrite(STDOUT, PHP_EOL."Bindle scan completed (run #{$run->id}). Output: ".config('bindle.output_path').PHP_EOL);
+            $output = config('bindle.output_path');
+            $output = is_string($output) ? $output : '';
+            fwrite(STDOUT, PHP_EOL."Bindle scan completed (run #{$run->id}). Output: ".$output.PHP_EOL);
         });
     }
 }
