@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace Maryeperry\Bindle\Storage\Models;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Maryeperry\Bindle\Browser\DriverKind;
 
 /**
  * @property int $id
  * @property string $environment
  * @property string $status
  * @property string $bindle_version
+ * @property string $driver
  */
 final class Run extends BindleModel
 {
@@ -20,6 +22,11 @@ final class Run extends BindleModel
         'started_at' => 'datetime',
         'finished_at' => 'datetime',
     ];
+
+    public function driverKind(): DriverKind
+    {
+        return DriverKind::fromOption($this->driver);
+    }
 
     public function pages(): HasMany
     {

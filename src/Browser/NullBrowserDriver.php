@@ -22,6 +22,11 @@ final class NullBrowserDriver implements BrowserDriver
         return $clone;
     }
 
+    public function kind(): DriverKind
+    {
+        return DriverKind::Placeholder;
+    }
+
     public function capture(string $url, int $width, int $height, string $screenshotPath): CapturedResponse
     {
         // 1x1 transparent PNG so on-disk paths still resolve.

@@ -16,7 +16,7 @@ abstract class BindleModel extends Model
     protected $guarded = [];
 
     /**
-     * Bindle's internal models live on their own SQLite connection and are
+     * The internal Bindle models live on their own SQLite connection and are
      * only ever read inside one-shot console / Dusk runs. Opt them out of the
      * host application's `Model::preventLazyLoading()` (common in strict-mode
      * apps) so our own documentation generation never throws a

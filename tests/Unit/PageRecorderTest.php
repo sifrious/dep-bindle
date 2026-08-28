@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Maryeperry\Bindle\Browser\BrowserDriver;
 use Maryeperry\Bindle\Browser\CapturedResponse;
+use Maryeperry\Bindle\Browser\DriverKind;
 use Maryeperry\Bindle\Browser\PageRecorder;
 use Maryeperry\Bindle\Routes\ResolvedRoute;
 use Maryeperry\Bindle\Storage\Database\DatabaseManager;
@@ -19,6 +20,11 @@ function fakeDriver(string $finalUrl, ?int $status = 200): BrowserDriver
     return new class($finalUrl, $status) implements BrowserDriver
     {
         public function __construct(private string $finalUrl, private ?int $status) {}
+
+        public function kind(): DriverKind
+        {
+            return DriverKind::Placeholder;
+        }
 
         public function capture(string $url, int $width, int $height, string $screenshotPath): CapturedResponse
         {

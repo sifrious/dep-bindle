@@ -2,7 +2,23 @@
     "preset": "base",
     "ignore": {
         "words": [
-            "php"
+            "attr",
+            "bem",
+            "bindle",
+            "callsite",
+            "expr",
+            "fpm",
+            "fqcn",
+            "js",
+            "nohup",
+            "parsers",
+            "php",
+            "runnable",
+            "sha",
+            "subprocess",
+            "substring",
+            "viewport",
+            "vue"
         ]
     }
 }

@@ -16,4 +16,9 @@ interface BrowserDriver
      * Chrome), NullBrowserDriver (test/no-op).
      */
     public function capture(string $url, int $width, int $height, string $screenshotPath): CapturedResponse;
+
+    /**
+     * What this driver is, recorded on the run so its output can be judged.
+     */
+    public function kind(): DriverKind;
 }

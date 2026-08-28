@@ -48,6 +48,13 @@ return [
     'database_path' => env('BINDLE_DATABASE_PATH', base_path('.bindle/bindle.sqlite')),
 
     /*
+    | Output of panel-spawned scans. A detached background scan has nowhere
+    | else to report a failure to start, so it is appended here and the panel
+    | shows the tail when a run does not appear.
+    */
+    'log_path' => env('BINDLE_LOG_PATH', base_path('.bindle/scan.log')),
+
+    /*
     | Viewport list used by the browser recorder for full-page screenshots.
     */
     'viewports' => [

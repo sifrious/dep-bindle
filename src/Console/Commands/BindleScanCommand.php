@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Maryeperry\Bindle\Console\Commands;
 
 use Illuminate\Console\Command;
+use Maryeperry\Bindle\Browser\DriverAvailability;
+use Maryeperry\Bindle\Browser\DriverKind;
 use Maryeperry\Bindle\Browser\NullBrowserDriver;
 use Maryeperry\Bindle\Pipeline\ScanPipeline;
 use Maryeperry\Bindle\Support\Environment;
@@ -20,7 +22,7 @@ final class BindleScanCommand extends Command
 
     protected $description = 'Run a Bindle scan: enumerate routes, screenshot pages, discover components, emit Markdown.';
 
-    public function handle(Environment $env, ScanPipeline $pipeline): int
+    public function handle(Environment $env, ScanPipeline $pipeline, DriverAvailability $availability): int
     {
         // Real screenshots require Chrome, which Bindle drives through Laravel
         // Dusk. Dusk owns its own bootstrapping/test environment, so we hand
@@ -33,8 +35,8 @@ final class BindleScanCommand extends Command
         // `.env.dusk.local`. The subprocess runs its own assertSafe() against
         // the URL it actually visits, so the production-host guard is enforced
         // in the right place instead of false-tripping on the parent's URL.
-        if ($this->option('driver') === 'dusk') {
-            return $this->runViaDusk();
+        if (DriverKind::fromOption($this->option('driver')) === DriverKind::Dusk) {
+            return $this->runViaDusk($availability);
         }
 
         // The null driver runs inline against this process's environment, so
@@ -53,12 +55,59 @@ final class BindleScanCommand extends Command
         return self::SUCCESS;
     }
 
-    private function runViaDusk(): int
+    /**
+     * Turn the common ChromeDriver/connection failures into one actionable
+     * line each, instead of leaving the developer to read a PHPUnit stack.
+     *
+     * @return list<string>
+     */
+    private function diagnose(string $output): array
+    {
+        $hints = [];
+
+        $patterns = [
+            'cannot find Chrome binary' => 'Chrome itself is not installed (the driver is not the browser). On macOS: brew install --cask google-chrome',
+            'session not created' => 'ChromeDriver and Chrome versions disagree. Re-run: php artisan dusk:chrome-driver --detect',
+            'Connection refused' => 'Nothing is serving your app. Start it with `php artisan serve` and check APP_URL in .env.dusk.local.',
+            'ERR_CONNECTION_REFUSED' => 'The browser could not reach APP_URL. Start the app and check .env.dusk.local.',
+            'chromedriver' => 'ChromeDriver may be missing or unexecutable. Re-run: php artisan dusk:chrome-driver --detect',
+            'Class "Laravel\\Dusk' => 'laravel/dusk is not installed. Run: composer require --dev laravel/dusk',
+        ];
+
+        foreach ($patterns as $needle => $hint) {
+            if (stripos($output, $needle) !== false) {
+                $hints[$hint] = true;
+            }
+        }
+
+        if ($hints === []) {
+            $hints['Check the Dusk output above, and `php artisan bindle:errors` for per-route failures.'] = true;
+        }
+
+        return array_keys($hints);
+    }
+
+    private function runViaDusk(DriverAvailability $availability): int
     {
         $relativeTestPath = 'tests/Browser/BindleScanTest.php';
 
-        if (! is_file(base_path($relativeTestPath))) {
-            $this->error("{$relativeTestPath} not found. Run `php artisan bindle:install` to publish it.");
+        $unmet = $availability->unmet(DriverKind::Dusk);
+
+        if ($unmet !== []) {
+            $this->error('Cannot take real screenshots yet. Missing preconditions:');
+            $this->newLine();
+
+            foreach ($unmet as $requirement) {
+                $this->line("  <fg=red>x</> {$requirement->label}");
+                $this->line("    why: {$requirement->consequence}");
+
+                if ($requirement->detail !== null) {
+                    $this->line("    note: {$requirement->detail}");
+                }
+
+                $this->line("    fix: {$requirement->command}");
+                $this->newLine();
+            }
 
             return self::FAILURE;
         }
@@ -84,10 +133,23 @@ final class BindleScanCommand extends Command
             // No TTY (CI etc.) — fall back to piped output below.
         }
 
-        $exitCode = $process->run(function (string $type, string $buffer): void {
+        $captured = '';
+        $exitCode = $process->run(function (string $type, string $buffer) use (&$captured): void {
+            $captured .= $buffer;
             $this->output->write($buffer);
         });
 
-        return $exitCode === 0 ? self::SUCCESS : self::FAILURE;
+        if ($exitCode !== 0) {
+            $this->newLine();
+            $this->error("Dusk exited with code {$exitCode} — no real screenshots were captured.");
+
+            foreach ($this->diagnose($captured) as $hint) {
+                $this->line("  <fg=yellow>-</> {$hint}");
+            }
+
+            return self::FAILURE;
+        }
+
+        return self::SUCCESS;
     }
 }

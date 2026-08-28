@@ -7,11 +7,15 @@ namespace Maryeperry\Bindle\Http\Controllers;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Maryeperry\Bindle\Browser\DriverAvailability;
+use Maryeperry\Bindle\Browser\DriverKind;
+use Maryeperry\Bindle\Http\InstallRunner;
 use Maryeperry\Bindle\Http\ScanRunner;
 use Maryeperry\Bindle\Routes\ResolvedRoute;
 use Maryeperry\Bindle\Routes\RouteEnumerator;
 use Maryeperry\Bindle\Storage\Database\DatabaseManager;
 use Maryeperry\Bindle\Storage\Models\Component;
+use Maryeperry\Bindle\Storage\Models\ErrorLog;
 use Maryeperry\Bindle\Storage\Models\Page;
 use Maryeperry\Bindle\Storage\Models\Run;
 
@@ -29,6 +33,8 @@ final readonly class PanelController
         private RouteEnumerator $routes,
         private DatabaseManager $db,
         private ScanRunner $runner,
+        private DriverAvailability $availability,
+        private InstallRunner $installer,
     ) {}
 
     public function index(): View
@@ -56,13 +62,21 @@ final readonly class PanelController
             'scannedPages' => $scannedPages,
             'latest' => $latest,
             'running' => $running,
+            'driverKinds' => $this->availability->availableKinds(),
+            'duskRequirements' => $this->availability->requirements(DriverKind::Dusk),
+            'duskAvailable' => $this->availability->isAvailable(DriverKind::Dusk),
         ]);
     }
 
-    public function scanAll(): RedirectResponse
+    public function scanAll(Request $request): RedirectResponse
     {
-        // (route: null, fresh: true) — scan every route, wiping prior data.
-        $this->runner->spawn(null, true);
+        $driver = $this->requestedDriver($request);
+
+        if ($driver === null) {
+            return $this->refuseUnavailableDriver();
+        }
+
+        $this->runner->spawn(null, true, $driver);
 
         return redirect()->route('bindle.panel.latest-status');
     }
@@ -82,20 +96,32 @@ final readonly class PanelController
                 ->with('bindle_error', "Unknown route: {$target}");
         }
 
-        // (route: $target, fresh: false) — scan one route, keeping prior data.
-        $this->runner->spawn($target, false);
+        $driver = $this->requestedDriver($request);
+
+        if ($driver === null) {
+            return $this->refuseUnavailableDriver();
+        }
+
+        $this->runner->spawn($target, false, $driver);
 
         return redirect()->route('bindle.panel.latest-status');
+    }
+
+    public function install(Request $request): RedirectResponse
+    {
+        $result = $this->installer->run((string) $request->input('action'));
+
+        return redirect()->route('bindle.panel.index')
+            ->with($result['ok'] ? 'bindle_notice' : 'bindle_error', $result['output'] === ''
+                ? 'Install command finished.'
+                : $result['output']);
     }
 
     public function status(int $run): View
     {
         $this->db->ensureSchema();
 
-        return view('bindle::status', [
-            'run' => Run::query()->find($run),
-            'pollSeconds' => (int) config('bindle.panel.poll_seconds', 2),
-        ]);
+        return $this->statusView(Run::query()->find($run));
     }
 
     public function latestStatus(): RedirectResponse|View
@@ -108,9 +134,49 @@ final readonly class PanelController
             return redirect()->route('bindle.panel.status', ['run' => $run->id]);
         }
 
+        return $this->statusView(null);
+    }
+
+    private function statusView(?Run $run): View
+    {
+        $problems = $run === null
+            ? collect()
+            : ErrorLog::query()
+                ->where('run_id', $run->id)
+                ->whereIn('severity', ['error', 'fatal'])
+                ->orderBy('id')
+                ->get();
+
         return view('bindle::status', [
-            'run' => null,
+            'run' => $run,
             'pollSeconds' => (int) config('bindle.panel.poll_seconds', 2),
+            'problems' => $problems,
+            'logTail' => $this->runner->tailLog(),
+            'logPath' => $this->runner->logPath(),
         ]);
+    }
+
+    /**
+     * The driver the form asked for, or null when it is not usable here. A
+     * request for real screenshots is never quietly downgraded to placeholders.
+     */
+    private function requestedDriver(Request $request): ?DriverKind
+    {
+        $driver = DriverKind::fromOption($request->input('driver'));
+
+        return $this->availability->isAvailable($driver) ? $driver : null;
+    }
+
+    private function refuseUnavailableDriver(): RedirectResponse
+    {
+        $missing = array_map(
+            static fn ($requirement): string => $requirement->label,
+            $this->availability->unmet(DriverKind::Dusk),
+        );
+
+        return redirect()->route('bindle.panel.index')->with(
+            'bindle_error',
+            'Real screenshots are not available yet — still missing: '.implode('; ', $missing).'.',
+        );
     }
 }

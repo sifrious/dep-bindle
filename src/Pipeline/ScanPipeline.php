@@ -7,6 +7,7 @@ namespace Maryeperry\Bindle\Pipeline;
 use Illuminate\Contracts\Config\Repository;
 use Maryeperry\Bindle\Browser\BrowserDriver;
 use Maryeperry\Bindle\Browser\CapturedPage;
+use Maryeperry\Bindle\Browser\DriverKind;
 use Maryeperry\Bindle\Browser\NullBrowserDriver;
 use Maryeperry\Bindle\Browser\PageRecorder;
 use Maryeperry\Bindle\Generators\MarkdownGenerator;
@@ -29,6 +30,7 @@ use Maryeperry\Bindle\Storage\Models\Run;
 use Maryeperry\Bindle\Storage\Models\Screenshot;
 use Maryeperry\Bindle\Support\Environment;
 use Maryeperry\Bindle\Support\Slug;
+use Maryeperry\Bindle\Support\UrlProbe;
 
 /**
  * Orchestrates a complete Bindle scan. Steps:
@@ -55,6 +57,7 @@ final class ScanPipeline
         private readonly ManifestScanner $manifest,
         private readonly MarkdownGenerator $markdown,
         private readonly ErrorLogger $errors,
+        private readonly UrlProbe $probe,
     ) {}
 
     /**
@@ -70,15 +73,19 @@ final class ScanPipeline
             $this->db->truncateAll();
         }
 
+        $driver ??= new NullBrowserDriver;
+
         $run = Run::create([
             'environment' => (string) $this->config->get('app.env', 'local'),
             'status' => 'running',
             'bindle_version' => '0.1.0-dev',
             'git_sha' => $this->gitSha(),
+            'driver' => $driver->kind()->value,
         ]);
         $this->errors->setRunId((int) $run->id);
 
-        $driver ??= new NullBrowserDriver;
+        $this->recordDriverExpectations($driver->kind());
+
         $doAll = $only === [];
 
         $resolvedRoutes = $this->routes->enumerate();
@@ -144,6 +151,36 @@ final class ScanPipeline
         ]);
 
         return $run;
+    }
+
+    /**
+     * Say up front what this run can and cannot produce, so `bindle:errors`
+     * explains an empty screenshot directory instead of leaving it a mystery.
+     */
+    private function recordDriverExpectations(DriverKind $kind): void
+    {
+        if (! $kind->producesRealScreenshots()) {
+            $this->errors->warn(
+                ErrorLogger::PHASE_RENDER,
+                'Running with the placeholder driver — screenshots will be 1x1 placeholders and the DOM will be empty, so Alpine bindings will not be discovered. Re-run with --driver=dusk for real screenshots.',
+                ['driver' => $kind->value],
+            );
+
+            return;
+        }
+
+        $url = (string) $this->config->get('app.url', '');
+        $reason = $url === ''
+            ? 'app.url is empty, so there is no address to visit.'
+            : $this->probe->unreachableReason($url);
+
+        if ($reason !== null) {
+            $this->errors->fatal(
+                ErrorLogger::PHASE_RENDER,
+                "The app is not reachable at [{$url}] — {$reason} Start it (`php artisan serve`) and check APP_URL in .env.dusk.local. Every page capture in this run will fail.",
+                ['driver' => $kind->value, 'app_url' => $url],
+            );
+        }
     }
 
     private function persistPage(Run $run, ResolvedRoute $resolved): Page

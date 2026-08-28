@@ -27,6 +27,11 @@ final class DuskBrowserDriver implements BrowserDriver
         private readonly Closure $browserFactory,
     ) {}
 
+    public function kind(): DriverKind
+    {
+        return DriverKind::Dusk;
+    }
+
     public function capture(string $url, int $width, int $height, string $screenshotPath): CapturedResponse
     {
         /** @var Browser $browser */

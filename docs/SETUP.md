@@ -164,4 +164,24 @@ Note: this is purely about the host app's analysis of its own `tests/`. Bindle's
 | Screenshots are all the **login page** | Not authenticated. Set `BINDLE_AUTH_USER_ID`. The "redirected to the login page" warnings in `bindle:errors` flag exactly which routes. |
 | `bindle:errors` shows many `HTTP 404` warnings | Asset/dev routes (debugbar, livewire) that aren't real pages. Exclude them via `bindle.routes.exclude`. |
 | Component Markdown fails with `LazyLoadingViolationException` | Fixed in Bindle: its internal models opt out of the host app's `Model::preventLazyLoading()`. Make sure you're on a current version. |
-| Screenshots are 1×1 / ~70 bytes | You ran `bindle:scan` without `--driver=dusk` (the no-op driver). Use `--driver=dusk`. |
+| Screenshots are 1×1 / ~70 bytes | You ran `bindle:scan` without `--driver=dusk` (the placeholder driver). Use `--driver=dusk`. The run's `driver` column and the panel badge both say which you got, and `bindle:errors` carries a warning explaining it. |
+| Alpine components are missing | Same cause. Alpine bindings are read out of the rendered DOM, and the placeholder driver's DOM is empty. Blade, Livewire, Inertia and manifest discovery are unaffected. |
+| The panel's scan buttons never produce screenshots | Pick **Dusk** in the driver dropdown. It only appears once every requirement is met; the panel lists the unmet ones with a fix beside each. |
+| I clicked a scan button and nothing appeared | The background scan died before writing a run. Open the status page — it shows the tail of `.bindle/scan.log`, which is where a panel-spawned scan's stdout and stderr go. |
+| `--driver=dusk` exits immediately listing preconditions | That is the intended behaviour: it refuses rather than silently producing placeholders. Each line names the fix. |
+
+### What the panel checks before offering real screenshots
+
+| Requirement | Fixable from the panel |
+|---|---|
+| `laravel/dusk` is installed | No — run `composer require --dev laravel/dusk` yourself |
+| `tests/DuskTestCase.php` exists | Yes — `php artisan dusk:install` |
+| `tests/Browser/BindleScanTest.php` is published | Yes — `php artisan bindle:install` |
+| A ChromeDriver binary is present | Yes — `php artisan dusk:chrome-driver --detect` (you still need Chrome itself) |
+| `.env.dusk.local` exists | No — it must be a full copy of `.env` with a local `APP_URL` (§3) |
+| The app answers at `app.url` | No — start it with `php artisan serve` |
+
+When the scan itself fails, `bindle:scan --driver=dusk` reads the Dusk output and
+turns the common failures — missing Chrome binary, ChromeDriver version mismatch,
+connection refused — into a single actionable line each, rather than leaving you to
+read a PHPUnit stack trace.

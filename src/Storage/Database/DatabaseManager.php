@@ -8,6 +8,7 @@ use Illuminate\Contracts\Config\Repository;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Schema\Builder as SchemaBuilder;
+use Maryeperry\Bindle\Browser\DriverKind;
 
 final class DatabaseManager
 {
@@ -23,6 +24,7 @@ final class DatabaseManager
         $schema = $this->factory->connection()->getSchemaBuilder();
 
         $this->createRunsTable($schema);
+        $this->addMissingRunColumns($schema);
         $this->createPagesTable($schema);
         $this->createComponentsTable($schema);
         $this->createPropsTable($schema);
@@ -65,6 +67,18 @@ final class DatabaseManager
             $t->string('git_sha', 64)->nullable();
             $t->string('status', 32)->default('running');
             $t->string('bindle_version', 32);
+            $t->string('driver', 32)->default(DriverKind::Placeholder->value);
+        });
+    }
+
+    private function addMissingRunColumns(SchemaBuilder $schema): void
+    {
+        if (! $schema->hasTable('runs') || $schema->hasColumn('runs', 'driver')) {
+            return;
+        }
+
+        $schema->table('runs', function (Blueprint $t): void {
+            $t->string('driver', 32)->default(DriverKind::Placeholder->value);
         });
     }
 

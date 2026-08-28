@@ -36,9 +36,18 @@
         .badge.method { background: #eef2ff; color: #2952cc; }
         .badge.running { background: #fff4d6; color: #8a6d00; }
         .badge.completed { background: #def7e5; color: #1c7c3c; }
+        .badge.failed { background: #fde8e8; color: #8a1f1f; }
+        .badge.driver-null { background: #ececf1; color: #55555f; }
+        .badge.driver-dusk { background: #def7e5; color: #1c7c3c; }
         .banner { background: #fff4d6; border: 1px solid #f0d98a; color: #6e5600; padding: .75rem 1rem; border-radius: 8px; margin: 1rem 0; }
         .error { background: #fde8e8; border: 1px solid #f5b5b5; color: #8a1f1f; padding: .75rem 1rem; border-radius: 8px; margin: 1rem 0; }
+        .notice { background: #def7e5; border: 1px solid #a5dfba; color: #14532d; padding: .75rem 1rem; border-radius: 8px; margin: 1rem 0; }
         .toolbar { margin: 1rem 0; }
+        .driver-form { display: flex; align-items: center; gap: .4rem; flex-wrap: wrap; }
+        select { font: inherit; padding: .3rem .4rem; border: 1px solid #c9c9d2; border-radius: 6px; background: #fff; color: inherit; }
+        pre { margin: 0; white-space: pre-wrap; word-break: break-word; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .85em; }
+        pre.log { background: #1b1b22; color: #e6e6ea; padding: .75rem 1rem; border-radius: 8px; overflow-x: auto; }
+        .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
     </style>
 </head>
 <body>

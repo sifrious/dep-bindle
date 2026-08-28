@@ -7,12 +7,15 @@ namespace Maryeperry\Bindle;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Maryeperry\Bindle\Browser\DriverAvailability;
 use Maryeperry\Bindle\Console\Commands\BindleErrorsCommand;
 use Maryeperry\Bindle\Console\Commands\BindleInstallCommand;
 use Maryeperry\Bindle\Console\Commands\BindleResetCommand;
 use Maryeperry\Bindle\Console\Commands\BindleScanCommand;
 use Maryeperry\Bindle\Generators\MarkdownGenerator;
+use Maryeperry\Bindle\Http\InstallRunner;
 use Maryeperry\Bindle\Http\Middleware\EnsureLocalAndEnabled;
+use Maryeperry\Bindle\Http\ScanRunner;
 use Maryeperry\Bindle\Phrases\Dictionary;
 use Maryeperry\Bindle\Pipeline\ScanPipeline;
 use Maryeperry\Bindle\Routes\RouteEnumerator;
@@ -25,6 +28,7 @@ use Maryeperry\Bindle\Storage\Database\ConnectionFactory;
 use Maryeperry\Bindle\Storage\Database\DatabaseManager;
 use Maryeperry\Bindle\Storage\ErrorLogger;
 use Maryeperry\Bindle\Support\Environment;
+use Maryeperry\Bindle\Support\UrlProbe;
 
 final class BindleServiceProvider extends ServiceProvider
 {
@@ -65,6 +69,11 @@ final class BindleServiceProvider extends ServiceProvider
         $this->app->singleton(InertiaScanner::class);
         $this->app->singleton(ManifestScanner::class);
         $this->app->singleton(MarkdownGenerator::class);
+
+        $this->app->singleton(UrlProbe::class);
+        $this->app->singleton(DriverAvailability::class);
+        $this->app->singleton(ScanRunner::class);
+        $this->app->singleton(InstallRunner::class);
 
         $this->app->singleton(ScanPipeline::class);
 

@@ -41,6 +41,11 @@ php artisan bindle:reset                 # wipe SQLite + output directory
 > and Markdown phases all run, but the page screenshots are 1×1 placeholders and the
 > rendered DOM is empty (so DOM-derived data like Alpine bindings won't be found).
 > For real screenshots you must use `--driver=dusk` — see [Screenshots](#screenshots-real-browser).
+>
+> You are never left guessing which you got. Every run stores its driver, a
+> placeholder run logs a warning saying what it could not capture (`php artisan
+> bindle:errors`), and `--driver=dusk` refuses to start unless every precondition is
+> met — printing each missing one with the command that fixes it.
 
 You can also scan a single route instead of the whole app:
 
@@ -54,6 +59,16 @@ php artisan bindle:scan --route=/users       # or by URI
 Bindle ships an optional web panel that lists every route and component on one
 page and gives you buttons to trigger a **full scan** or a **single-page scan** —
 each runs `bindle:scan` in the background while a status page polls for completion.
+
+Each scan form carries a **driver dropdown**. Dusk only appears in it once every
+requirement for real screenshots is met; until then the panel says so plainly,
+lists what is missing, and offers a **Run this** button beside each fix that is an
+Artisan command. Asking for Dusk while it cannot run is refused with the list of
+what is missing — a request for real screenshots is never quietly downgraded to
+placeholders.
+
+Every run records the driver that produced it, shown as a badge on the panel and
+the status page, so a placeholder run cannot be mistaken for a real one later.
 
 It is **off by default** and only ever registers its routes when `APP_ENV=local`.
 Turn it on in `.env`:
@@ -71,6 +86,7 @@ Then visit **`/_bindle`**. Configuration lives in the `panel` block of
 | `panel.path` (`BINDLE_PANEL_PATH`) | `_bindle` | URL prefix for the panel. |
 | `panel.middleware` | `['web']` | Middleware stack; `EnsureLocalAndEnabled` (a 404 gate) is always appended. |
 | `panel.poll_seconds` (`BINDLE_PANEL_POLL`) | `2` | Status-page refresh interval while a scan runs. |
+| `log_path` (`BINDLE_LOG_PATH`) | `.bindle/scan.log` | Where panel-spawned scans write stdout and stderr. The status page shows the tail. |
 
 The panel is gated three ways: the provider only registers the routes in `local`
 with the flag on, a request-time middleware re-checks and returns **404** otherwise,
