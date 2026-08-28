@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Capture detail · dashboard — Bindle</title>
+  <link rel="stylesheet" href="wireframes.css">
+</head>
+<body>
+  <a class="skip" href="#content">Skip to content</a>
+  <header class="site-header">
+    <div class="brand">
+      <p class="product"><a href="index.html">Bindle</a></p>
+      <p class="ticket"><a href="https://linear.app/sifirous/issue/MME-1808">MME-1808</a></p>
+    </div>
+    <nav class="site-nav" aria-label="Panel">
+      <span class="nav-dead">Scan console <small>not in this sketch</small></span>
+      <span class="nav-dead">Inventory</span>
+      <a href="capture-detail.html" aria-current="page">Capture</a>
+      <a href="design-compare.html">Compare</a>
+      <a href="wireframe-board.html">Board</a>
+    </nav>
+  </header>
+
+  <main id="content">
+    <div class="page-head">
+      <div>
+        <h1>Capture · <code>dashboard</code></h1>
+        <div class="meta">
+          <span>GET <code>/</code></span>
+          <span>component <code>x-stat-card</code></span>
+          <span class="badge badge-ok">real screenshots</span>
+          <span class="muted">run #14 · Dusk</span>
+        </div>
+      </div>
+      <p class="actions">
+        <a class="btn" href="design-compare.html">Compare with design</a>
+      </p>
+    </div>
+
+    <div class="stack">
+      <section class="card" aria-labelledby="shots-h">
+        <h2 id="shots-h">Screenshots</h2>
+        <p class="caption">CSS frames standing in for Dusk PNGs. Not photographs.</p>
+        <div class="grid-2" style="margin-top:.75rem">
+          <figure>
+            <div class="shot shot-desktop" role="img" aria-label="Desktop screenshot frame for dashboard">dashboard layout · 1280 wide</div>
+            <figcaption>desktop 1280</figcaption>
+          </figure>
+          <figure>
+            <div class="shot shot-mobile" role="img" aria-label="Mobile screenshot frame for dashboard">stacked · 390 wide</div>
+            <figcaption>mobile 390</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <aside class="placeholder-example" aria-labelledby="ph-h">
+        <h2 id="ph-h">Placeholder example — not a photograph</h2>
+        <p>
+          <span class="badge badge-mute">no screenshots</span>
+          Null-driver run. Bindle stored a 1×1 file and an empty DOM.
+          This sketch does not draw that file as a page photo.
+        </p>
+        <p class="muted"><span class="px" aria-hidden="true"></span>1×1 placeholder pixel (labeled, not shown as a screenshot).</p>
+      </aside>
+
+      <section class="card" aria-labelledby="variants-h">
+        <h2 id="variants-h">Variants · <code>x-stat-card</code></h2>
+        <ul class="plain">
+          <li><code>default</code> — label + value + delta, used on <code>dashboard</code></li>
+          <li><code>loading</code> — value replaced by a pulse slot</li>
+          <li><code>empty</code> — “No metric yet”</li>
+          <li><code>error</code> — tone danger, retry affordance</li>
+        </ul>
+      </section>
+
+      <section aria-labelledby="props-h">
+        <h2 id="props-h">Props</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Type</th>
+              <th>Default</th>
+              <th>Seen on dashboard</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>label</code></td>
+              <td>string</td>
+              <td>—</td>
+              <td><code>Active binds</code></td>
+            </tr>
+            <tr>
+              <td><code>value</code></td>
+              <td>int</td>
+              <td><code>0</code></td>
+              <td><code>24</code></td>
+            </tr>
+            <tr>
+              <td><code>delta</code></td>
+              <td>string</td>
+              <td><code>null</code></td>
+              <td><code>+3 today</code></td>
+            </tr>
+            <tr>
+              <td><code>tone</code></td>
+              <td><code>success | warn | danger</code></td>
+              <td><code>success</code></td>
+              <td><code>success</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <details>
+        <summary>DOM / semantic snippet</summary>
+        <pre class="dom">&lt;main&gt;
+  &lt;header&gt;&lt;h1&gt;Dashboard&lt;/h1&gt;&lt;/header&gt;
+  &lt;section aria-label="Stats"&gt;
+    &lt;article class="x-stat-card" data-tone="success"&gt;
+      &lt;h2&gt;Active binds&lt;/h2&gt;
+      &lt;p&gt;&lt;data value="24"&gt;24&lt;/data&gt;&lt;/p&gt;
+      &lt;p&gt;+3 today&lt;/p&gt;
+    &lt;/article&gt;
+  &lt;/section&gt;
+&lt;/main&gt;</pre>
+      </details>
+
+      <section class="card" aria-labelledby="findings-h">
+        <h2 id="findings-h">Findings</h2>
+        <ul class="plain">
+          <li>Heading order on <code>dashboard</code> is h1 then h2 inside <code>x-stat-card</code>.</li>
+          <li>Stat value is a <code>data</code> element; screen readers get the number.</li>
+          <li>Mobile 390 wraps the stats section to a single column; no overflow.</li>
+          <li>Missing skip link on the captured app page (not Bindle chrome).</li>
+        </ul>
+      </section>
+
+      <section class="card card-err" aria-labelledby="errors-h">
+        <h2 id="errors-h">Errors for this route</h2>
+        <ul class="plain">
+          <li>None on this Dusk run. Auth did not redirect.</li>
+          <li class="muted">Parameterized sibling <code>dashboard.widget</code> skipped — needs a fixture in <code>config/bindle.php</code>.</li>
+        </ul>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">Local only. Bindle refuses production.</footer>
+</body>
+</html>
