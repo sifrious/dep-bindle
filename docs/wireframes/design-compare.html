@@ -1,77 +1,94 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Design compare · dashboard — Bindle</title>
-  <link rel="stylesheet" href="wireframes.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Compare dashboard — Bindle</title>
+    <link rel="stylesheet" href="wireframes.css">
 </head>
 <body>
-  <a class="skip" href="#content">Skip to content</a>
-  <header class="site-header">
-    <div class="brand">
-      <p class="product"><a href="index.html">Bindle</a></p>
-      <p class="ticket"><a href="https://linear.app/sifirous/issue/MME-1810">MME-1810</a></p>
-    </div>
-    <nav class="site-nav" aria-label="Panel">
-      <span class="nav-dead">Scan console <small>not in this sketch</small></span>
-      <span class="nav-dead">Inventory</span>
-      <a href="capture-detail.html">Capture</a>
-      <a href="design-compare.html" aria-current="page">Compare</a>
-      <a href="wireframe-board.html">Board</a>
-    </nav>
-  </header>
+    <nav class="tool-nav"><a href="index.html">Bindle</a> / <a href="capture-detail.html">dashboard</a></nav>
 
-  <main id="content">
-    <div class="page-head">
-      <div>
-        <h1>Compare · <code>dashboard</code></h1>
-        <div class="meta">
-          <span>component <code>x-stat-card</code></span>
-          <span class="badge badge-ok">real screenshots</span>
-          <a href="capture-detail.html">Back to capture</a>
+    <header>
+        <div>
+            <h1>dashboard</h1>
+            <p>
+                <span class="badge method">GET</span>
+                <span class="badge completed">real screenshots</span>
+            </p>
         </div>
-      </div>
+    </header>
+
+    <p class="muted">This run used Dusk.</p>
+
+    <div class="compare">
+        <figure>
+            <figcaption>Implementation</figcaption>
+            <div class="device device-desktop">
+                <div class="device-chrome">
+                    <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                    <span class="url">localhost/dashboard</span>
+                </div>
+                <div class="app">
+                    <div class="app-bar">
+                        <strong>Acme</strong>
+                        <span>Overview · Binds · Settings</span>
+                    </div>
+                    <div class="app-body">
+                        <div class="stat-row">
+                            <article class="stat">
+                                <p class="stat-label">Active binds</p>
+                                <p class="stat-value">24</p>
+                            </article>
+                            <article class="stat">
+                                <p class="stat-label">Queue</p>
+                                <p class="stat-value">3</p>
+                            </article>
+                            <article class="stat">
+                                <p class="stat-label">Errors</p>
+                                <p class="stat-value">0</p>
+                            </article>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </figure>
+        <figure>
+            <figcaption>Design</figcaption>
+            <div class="device device-desktop">
+                <div class="device-chrome">
+                    <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                    <span class="url">/designs/dashboard.png</span>
+                </div>
+                <div class="app app-design">
+                    <div class="app-bar">
+                        <strong>Acme</strong>
+                        <span>Overview · Binds · Settings</span>
+                    </div>
+                    <div class="app-body">
+                        <div class="stat-row">
+                            <article class="stat">
+                                <p class="stat-label">Active binds</p>
+                                <p class="stat-value">24 <span class="pill">ok</span></p>
+                            </article>
+                            <article class="stat">
+                                <p class="stat-label">Queue</p>
+                                <p class="stat-value">3</p>
+                            </article>
+                            <article class="stat">
+                                <p class="stat-label">Errors</p>
+                                <p class="stat-value">0</p>
+                            </article>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <form class="toolbar" method="get" action="design-compare.html">
+                <label class="visually-hidden" for="design">Design still URL</label>
+                <input id="design" type="url" name="design" placeholder="https://…">
+                <button type="submit">Attach</button>
+            </form>
+        </figure>
     </div>
-
-    <div class="stack">
-      <aside class="card card-warn" aria-labelledby="refuse-h">
-        <h2 id="refuse-h">Placeholder captures are refused</h2>
-        <p>
-          A null-driver run cannot enter this view as if it were a screenshot.
-          Attach a design still only against a Dusk capture (<span class="badge badge-ok">real screenshots</span>).
-          The 1×1 placeholder is not drawn here.
-        </p>
-      </aside>
-
-      <div class="grid-2">
-        <section class="card" aria-labelledby="impl-h">
-          <h2 id="impl-h">Implementation</h2>
-          <p class="caption">Left: Dusk capture of <code>dashboard</code>.</p>
-          <figure style="margin-top:.75rem">
-            <div class="shot shot-impl" role="img" aria-label="Implementation screenshot frame">implemented dashboard</div>
-            <figcaption>desktop 1280</figcaption>
-          </figure>
-        </section>
-
-        <section class="card" aria-labelledby="design-h">
-          <h2 id="design-h">Design</h2>
-          <p class="caption">Right: supplied still. Empty until attached.</p>
-          <figure style="margin-top:.75rem">
-            <div class="shot shot-impl shot-empty" role="img" aria-label="Empty design still slot">attach a design still</div>
-            <figcaption>no design attached</figcaption>
-          </figure>
-          <form class="inline" method="get" action="design-compare.html">
-            <label class="field">Design still URL
-              <input type="url" name="design" placeholder="https://…">
-            </label>
-            <button type="submit">Attach</button>
-          </form>
-        </section>
-      </div>
-    </div>
-  </main>
-
-  <footer class="site-footer">Local only. Bindle refuses production.</footer>
 </body>
 </html>

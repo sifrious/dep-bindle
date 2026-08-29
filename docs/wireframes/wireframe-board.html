@@ -1,78 +1,76 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Wireframe board · dashboard — Bindle</title>
-  <link rel="stylesheet" href="wireframes.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>dashboard — Bindle</title>
+    <link rel="stylesheet" href="wireframes.css">
 </head>
 <body>
-  <a class="skip" href="#content">Skip to content</a>
-  <header class="site-header">
-    <div class="brand">
-      <p class="product"><a href="index.html">Bindle</a></p>
-      <p class="ticket"><a href="https://linear.app/sifirous/issue/MME-1809">MME-1809</a></p>
-    </div>
-    <nav class="site-nav" aria-label="Panel">
-      <span class="nav-dead">Scan console <small>not in this sketch</small></span>
-      <span class="nav-dead">Inventory</span>
-      <a href="capture-detail.html">Capture</a>
-      <a href="design-compare.html">Compare</a>
-      <a href="wireframe-board.html" aria-current="page">Board</a>
-    </nav>
-  </header>
+    <nav class="tool-nav"><a href="index.html">Bindle</a> / board</nav>
 
-  <main id="content">
-    <div class="page-head">
-      <div>
-        <h1>Board · planned <code>dashboard</code></h1>
-        <p class="lede">Planning, not a scan. Named regions and states — not a Figma canvas.</p>
-      </div>
-    </div>
+    <header>
+        <div>
+            <h1>dashboard</h1>
+            <p class="muted">Planned page. Not captured yet.</p>
+        </div>
+    </header>
 
-    <p class="caption" style="margin-bottom:1rem">This page sketches a UI that may not exist yet. Inventory lists what the app already contains; this board does not.</p>
+    <p class="states">
+        <a href="#empty">empty</a>
+        <a href="#loading">loading</a>
+        <a href="#error">error</a>
+        <a href="#populated">populated</a>
+    </p>
 
-    <div class="board">
-      <section class="region" aria-labelledby="region-header">
-        <h2 id="region-header">header</h2>
-        <ul class="states">
-          <li>empty</li>
-          <li>loading</li>
-          <li>error</li>
-          <li>populated</li>
-        </ul>
-        <p class="region-notes">App name, local env badge, operator account. No marketing chrome.</p>
-        <p class="later">link to capture — none yet (placeholder)</p>
-      </section>
-
-      <div class="board-body">
-        <section class="region" aria-labelledby="region-main">
-          <h2 id="region-main">main</h2>
-          <ul class="states">
-            <li>empty</li>
-            <li>loading</li>
-            <li>error</li>
-            <li>populated</li>
-          </ul>
-          <p class="region-notes">Slot for <code>x-stat-card</code> grid. Populated state is a row of metric cards; empty is “No metrics yet”; loading shows pulse slots; error shows the scan/auth failure inline.</p>
-          <p class="later">link to capture — <a href="capture-detail.html">dashboard</a> (once scanned)</p>
+    <div class="boards">
+        <section class="skeleton empty" id="empty" aria-label="empty">
+            <div class="skel-header"><span class="region-label">header</span></div>
+            <aside class="skel-aside"><span class="region-label">aside</span></aside>
+            <div class="skel-main">
+                <span class="region-label">stats</span>
+                <div class="skel-stats">
+                    <div class="skel-card"></div>
+                    <div class="skel-card"></div>
+                    <div class="skel-card"></div>
+                </div>
+            </div>
         </section>
 
-        <section class="region" aria-labelledby="region-aside">
-          <h2 id="region-aside">aside</h2>
-          <ul class="states">
-            <li>empty</li>
-            <li>loading</li>
-            <li>error</li>
-            <li>populated</li>
-          </ul>
-          <p class="region-notes">Recent findings and route errors. Empty until a scan exists.</p>
-          <p class="later">link to capture — placeholder</p>
+        <section class="skeleton loading" id="loading" aria-label="loading">
+            <div class="skel-header"><span class="region-label">header</span></div>
+            <aside class="skel-aside"><span class="region-label">aside</span></aside>
+            <div class="skel-main">
+                <span class="region-label">stats</span>
+                <div class="skel-stats">
+                    <div class="skel-card"></div>
+                    <div class="skel-card"></div>
+                    <div class="skel-card"></div>
+                </div>
+            </div>
         </section>
-      </div>
-    </div>
-  </main>
 
-  <footer class="site-footer">Local only. Bindle refuses production.</footer>
+        <section class="skeleton error" id="error" aria-label="error">
+            <div class="skel-header"><span class="region-label">header</span></div>
+            <aside class="skel-aside"><span class="region-label">aside</span></aside>
+            <div class="skel-main">
+                <span class="region-label">stats</span>
+                <div class="error">Could not load stats.</div>
+            </div>
+        </section>
+
+        <section class="skeleton" id="populated" aria-label="populated">
+            <div class="skel-header"><span class="region-label">header</span></div>
+            <aside class="skel-aside"><span class="region-label">aside</span></aside>
+            <div class="skel-main">
+                <span class="region-label">stats</span>
+                <div class="skel-stats">
+                    <div class="skel-card"></div>
+                    <div class="skel-card"></div>
+                    <div class="skel-card"></div>
+                </div>
+            </div>
+        </section>
+    </div>
 </body>
 </html>
