@@ -1,0 +1,6 @@
+{
+  "layouts": [{"ref": "layouts.app", "kind": "blade", "source_path": "resources/views/layouts/app.blade.php", "slots": ["content"], "dependencies": ["components.global-nav"]}],
+  "components": [{"ref": "components.global-nav", "kind": "blade", "source_path": "resources/views/components/global-nav.blade.php", "props": [], "slots": []}],
+  "routes": [{"name": "change-stories.show", "uri": "/change-stories/{story}"}],
+  "styling": {"source": "captured", "layout": "layouts.app"}
+}

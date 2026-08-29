@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "id": "burdgeon-change-story",
+  "title": "Burdgeon ChangeStory",
+  "source": {"kind": "git-behavior", "path": "/Users/mme/gits/sifrious/vault/thoughts/Projects/Burdgeon/Git Behavior/Git Behavior.md"},
+  "target": {
+    "root": "/Users/mme/gits/sifrious/burdgeon",
+    "paths": ["resources/views/change-stories/show.blade.php", "tests/Feature/ChangeStoryPageTest.php"]
+  },
+  "behaviors": [
+    {"id": "GIT-112", "order": 1, "title": "Ordered chapters", "given": ["a validated Kilgore ChangeStory fixture"], "when": ["the story page is rendered"], "then": ["functional chapters appear before mechanical groups"]},
+    {"id": "GIT-113", "order": 2, "title": "Claim relationships", "given": ["claims with relationship states"], "when": ["a chapter is presented"], "then": ["observed, inferred, asserted, and unverified states remain visible"]},
+    {"id": "GIT-114", "order": 3, "title": "Test evidence", "given": ["executed and inferred test relationships"], "when": ["test evidence is presented"], "then": ["execution evidence is distinct from likely relevance"]},
+    {"id": "GIT-115", "order": 4, "title": "Mechanical groups", "given": ["formatting and lockfile evidence"], "when": ["the story is presented"], "then": ["mechanical evidence remains inspectable without becoming a functional chapter"]},
+    {"id": "GIT-116", "order": 5, "title": "Uncertainty", "given": ["missing or conflicting evidence"], "when": ["the story is presented"], "then": ["uncertainties and open questions are explicit"]}
+  ]
+}

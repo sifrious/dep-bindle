@@ -1,5 +1,9 @@
 # Bindle
 
+Bindle supports both reverse UI inspection and a safe forward composition path.
+See [Forward composition](docs/FORWARD-COMPOSITION.md) for behavior contracts,
+reuse-first planning, dry-run scaffolding, and real-browser evidence rules.
+
 A local-only Laravel package that screenshots every page in your app, enumerates every component and prop across **Blade, Livewire, Alpine, Vue, React, and Svelte** (in both Inertia and non-Inertia projects), persists the whole graph in a self-contained SQLite database, and writes Markdown docs aimed at AI coding agents — **no AI is used to generate them**. The Markdown is composed from a hand-curated phrase dictionary.
 
 > **Bindle refuses to run when `APP_ENV=production`.** The provider, every Artisan command, and the published config all assert this independently.

@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "id": "burdgeon-change-story-page",
+  "story_id": "burdgeon-change-story",
+  "framework": "blade",
+  "paths": ["resources/views/change-stories/show.blade.php", "tests/Feature/ChangeStoryPageTest.php"],
+  "states": [
+    {"id": "complete", "label": "Evidence complete"},
+    {"id": "uncertain", "label": "Missing or conflicting evidence"}
+  ],
+  "regions": [
+    {"id": "chapters", "label": "Ordered chapters", "ref": {"id": "story-chapter-list", "status": "proposal"}, "states": ["complete", "uncertain"], "behaviors": ["GIT-112", "GIT-113"]},
+    {"id": "evidence", "label": "Test evidence", "ref": {"id": "story-evidence-list", "status": "proposal"}, "states": ["complete", "uncertain"], "behaviors": ["GIT-114"]},
+    {"id": "mechanical", "label": "Mechanical changes", "ref": {"id": "story-mechanical-group", "status": "proposal"}, "states": ["complete"], "behaviors": ["GIT-115"]},
+    {"id": "uncertainty", "label": "Open questions", "ref": {"id": "story-uncertainty-list", "status": "proposal"}, "states": ["uncertain"], "behaviors": ["GIT-116"]}
+  ]
+}
