@@ -15,6 +15,7 @@
         }
         h1 { font-size: 1.4rem; margin: 0 0 .25rem; }
         h2 { font-size: 1.05rem; margin: 2rem 0 .75rem; }
+        h3 { font-size: .95rem; margin: 0 0 .5rem; }
         .muted { color: #6b6b76; }
         a { color: #2952cc; }
         header { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
@@ -48,6 +49,10 @@
         pre { margin: 0; white-space: pre-wrap; word-break: break-word; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .85em; }
         pre.log { background: #1b1b22; color: #e6e6ea; padding: .75rem 1rem; border-radius: 8px; overflow-x: auto; }
         .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+        .capture-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
+        .capture-card { border: 1px solid #e6e6ea; border-radius: 8px; background: #fff; padding: .75rem; }
+        .capture-image { display: block; max-width: 100%; border: 1px solid #efeff2; border-radius: 6px; }
+        .placeholder-shot { border: 1px dashed #d4c07d; background: #fff9e7; border-radius: 6px; padding: .6rem; }
     </style>
 </head>
 <body>

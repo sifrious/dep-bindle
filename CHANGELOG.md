@@ -16,3 +16,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   status page shows the tail plus any errors the run recorded
 - `bindle:scan --driver=dusk` checks its preconditions up front and diagnoses the
   common Chrome/ChromeDriver/connection failures
+- `/_bindle` inventory rows now link to a capture-detail page for scanned routes,
+  with screenshot slots, component props/variants, semantic/a11y notes, and
+  explicit placeholder labeling

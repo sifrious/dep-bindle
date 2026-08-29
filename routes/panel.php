@@ -24,3 +24,9 @@ Route::get('/status/{run}', [PanelController::class, 'status'])
     ->where('run', '[0-9]+')
     ->name('status');
 Route::get('/status', [PanelController::class, 'latestStatus'])->name('latest-status');
+Route::get('/captures/page/{page}', [PanelController::class, 'showPageCapture'])
+    ->where('page', '[0-9]+')
+    ->name('captures.page');
+Route::get('/captures/screenshot/{screenshot}', [PanelController::class, 'screenshot'])
+    ->where('screenshot', '[0-9]+')
+    ->name('captures.screenshot');

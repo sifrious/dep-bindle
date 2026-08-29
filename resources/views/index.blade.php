@@ -113,6 +113,8 @@
                             @if ($latest !== null)
                                 <span class="badge driver-{{ $latest->driverKind()->value }}">{{ $latest->driverKind()->label() }}</span>
                             @endif
+                            <br>
+                            <a href="{{ route('bindle.panel.captures.page', ['page' => $scanned->id]) }}">View capture &rarr;</a>
                         @else
                             <span class="muted">never</span>
                         @endif
