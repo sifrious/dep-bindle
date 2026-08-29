@@ -137,6 +137,22 @@ final readonly class PanelController
         return $this->statusView(null);
     }
 
+    public function wireframeBoard(Request $request): View
+    {
+        $state = strtolower(trim((string) $request->query('state', 'empty')));
+        $allowed = ['empty', 'loading', 'error', 'populated'];
+
+        $activeState = in_array($state, $allowed, true) ? $state : 'empty';
+        $showFallbackNotice = $state !== '' && $state !== $activeState;
+
+        return view('bindle::wireframe-board', [
+            'activeState' => $activeState,
+            'stateOptions' => $allowed,
+            'showFallbackNotice' => $showFallbackNotice,
+            'regions' => $this->wireframeRegions($activeState),
+        ]);
+    }
+
     private function statusView(?Run $run): View
     {
         $problems = $run === null
@@ -154,6 +170,29 @@ final readonly class PanelController
             'logTail' => $this->runner->tailLog(),
             'logPath' => $this->runner->logPath(),
         ]);
+    }
+
+    /**
+     * @return array<int, array{name: string, role: string, note: string}>
+     */
+    private function wireframeRegions(string $state): array
+    {
+        $stateNotes = [
+            'empty' => 'No captured composition mapped yet; define intent and expected semantics.',
+            'loading' => 'Capture or processing in progress; preserve region order and reserve space.',
+            'error' => 'Capture failed or region ambiguous; note the failure and the expected fallback.',
+            'populated' => 'Region has mapped UI evidence; include concise notes and structural intent.',
+        ];
+
+        $note = $stateNotes[$state] ?? $stateNotes['empty'];
+
+        return [
+            ['name' => 'Global header', 'role' => 'Navigation and identity', 'note' => $note],
+            ['name' => 'Primary hero', 'role' => 'Top-of-page orientation', 'note' => $note],
+            ['name' => 'Main content', 'role' => 'Core page intent and actions', 'note' => $note],
+            ['name' => 'Supplementary rail', 'role' => 'Secondary metadata and hints', 'note' => $note],
+            ['name' => 'Footer/meta', 'role' => 'Support links and low-priority context', 'note' => $note],
+        ];
     }
 
     /**

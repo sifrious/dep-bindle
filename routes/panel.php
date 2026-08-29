@@ -16,6 +16,7 @@ Route::get('/', [PanelController::class, 'index'])->name('index');
 Route::post('/scan', [PanelController::class, 'scanAll'])->name('scan-all');
 Route::post('/scan/page', [PanelController::class, 'scanPage'])->name('scan-page');
 Route::post('/install', [PanelController::class, 'install'])->name('install');
+Route::get('/wireframe-board', [PanelController::class, 'wireframeBoard'])->name('wireframe-board');
 
 // {run} is a plain int id, NOT route-model-bound — the Run model lives on the
 // dedicated `bindle` connection, which isn't registered until the controller
