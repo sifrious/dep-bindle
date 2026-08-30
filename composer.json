@@ -2,7 +2,7 @@
     "name": "maryeperry/bindle",
     "description": "Dev-only Laravel package that screenshots every page, enumerates components and props across Blade/Livewire/Alpine/Vue/React/Svelte, stores the graph in SQLite, and emits Markdown docs from a phrase dictionary.",
     "keywords": ["laravel", "dusk", "audit", "screenshots", "blade", "livewire", "inertia", "documentation"],
-    "license": "MIT",
+    "license": "proprietary",
     "authors": [
         {
             "name": "Mary Perry",

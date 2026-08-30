@@ -1,5 +1,9 @@
 # Bindle
 
+> **License:** Copyright © 2026 Sifrious. All rights reserved. This is
+> publicly viewable proprietary software, not open-source software. See
+> [LICENSE.md](LICENSE.md).
+
 A local-only Laravel package that screenshots every page in your app, enumerates every component and prop across **Blade, Livewire, Alpine, Vue, React, and Svelte** (in both Inertia and non-Inertia projects), persists the whole graph in a self-contained SQLite database, and writes Markdown docs aimed at AI coding agents — **no AI is used to generate them**. The Markdown is composed from a hand-curated phrase dictionary.
 
 > **Bindle refuses to run when `APP_ENV=production`.** The provider, every Artisan command, and the published config all assert this independently.
@@ -189,5 +193,3 @@ composer test          # lint, typos, unit, types, refactor dry-run
 composer test:unit     # just pest
 composer lint          # auto-fix with Pint
 ```
-
-MIT licensed.
