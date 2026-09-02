@@ -1,0 +1,1 @@
+<nav aria-label="Inspection views"><ul class="bindle-nav-links">@foreach($tabs as $key => $tab)<li>@if($key === $active)<a href="{{ $tab['url'] }}" aria-current="page">{{ $tab['label'] }}</a>@else<a href="{{ $tab['url'] }}">{{ $tab['label'] }}</a>@endif</li>@endforeach</ul></nav>
