@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>dashboard — Bindle</title>
+    <link rel="stylesheet" href="wireframes.css">
+</head>
+<body>
+    <nav class="tool-nav"><a href="index.html">Bindle</a> / dashboard</nav>
+
+    <header>
+        <div>
+            <h1>dashboard</h1>
+            <p>
+                <span class="badge method">GET</span>
+                <span class="badge completed">real screenshots</span>
+            </p>
+        </div>
+        <a class="btn" href="design-compare.html">Compare</a>
+    </header>
+
+    <p class="muted">This run used Dusk.</p>
+
+    <h2>Screenshots</h2>
+    <div class="shots">
+        <figure>
+            <div class="device device-desktop">
+                <div class="device-chrome">
+                    <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                    <span class="url">localhost/dashboard</span>
+                </div>
+                <div class="app">
+                    <div class="app-bar">
+                        <strong>Acme</strong>
+                        <span>Overview · Binds · Settings</span>
+                    </div>
+                    <div class="app-body">
+                        <div class="stat-row">
+                            <article class="stat">
+                                <p class="stat-label">Active binds</p>
+                                <p class="stat-value">24</p>
+                            </article>
+                            <article class="stat">
+                                <p class="stat-label">Queue</p>
+                                <p class="stat-value">3</p>
+                            </article>
+                            <article class="stat">
+                                <p class="stat-label">Errors</p>
+                                <p class="stat-value">0</p>
+                            </article>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <figcaption>desktop</figcaption>
+        </figure>
+        <figure>
+            <div class="device device-mobile">
+                <div class="device-chrome"><span class="notch"></span></div>
+                <div class="app">
+                    <div class="app-bar">
+                        <strong>Acme</strong>
+                    </div>
+                    <div class="app-body">
+                        <div class="stat-row">
+                            <article class="stat">
+                                <p class="stat-label">Active binds</p>
+                                <p class="stat-value">24</p>
+                            </article>
+                            <article class="stat">
+                                <p class="stat-label">Queue</p>
+                                <p class="stat-value">3</p>
+                            </article>
+                            <article class="stat">
+                                <p class="stat-label">Errors</p>
+                                <p class="stat-value">0</p>
+                            </article>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <figcaption>mobile</figcaption>
+        </figure>
+    </div>
+
+    <h2>Variants</h2>
+    <ul class="chips">
+        <li>default</li>
+        <li>loading</li>
+        <li>empty</li>
+        <li>error</li>
+    </ul>
+
+    <h2>Props</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Default</th>
+                <th>Seen on dashboard</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>label</code></td>
+                <td>string</td>
+                <td>—</td>
+                <td><code>Active binds</code></td>
+            </tr>
+            <tr>
+                <td><code>value</code></td>
+                <td>int</td>
+                <td><code>0</code></td>
+                <td><code>24</code></td>
+            </tr>
+            <tr>
+                <td><code>delta</code></td>
+                <td>string</td>
+                <td><code>null</code></td>
+                <td><code>+3 today</code></td>
+            </tr>
+            <tr>
+                <td><code>tone</code></td>
+                <td><code>success | warn | danger</code></td>
+                <td><code>success</code></td>
+                <td><code>success</code></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Findings</h2>
+    <ul class="findings">
+        <li>Stat cards read as label then number.</li>
+        <li>Mobile stacks the three cards; no overflow.</li>
+    </ul>
+
+    <div class="banner"><code>dashboard.widget</code> skipped — needs a fixture.</div>
+
+    <details>
+        <summary>DOM</summary>
+        <pre>&lt;main&gt;
+  &lt;header&gt;&lt;strong&gt;Acme&lt;/strong&gt;&lt;/header&gt;
+  &lt;section&gt;
+    &lt;article&gt;&lt;p&gt;Active binds&lt;/p&gt;&lt;p&gt;24&lt;/p&gt;&lt;/article&gt;
+    &lt;article&gt;&lt;p&gt;Queue&lt;/p&gt;&lt;p&gt;3&lt;/p&gt;&lt;/article&gt;
+    &lt;article&gt;&lt;p&gt;Errors&lt;/p&gt;&lt;p&gt;0&lt;/p&gt;&lt;/article&gt;
+  &lt;/section&gt;
+&lt;/main&gt;</pre>
+    </details>
+</body>
+</html>

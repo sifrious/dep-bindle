@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Compare dashboard — Bindle</title>
+    <link rel="stylesheet" href="wireframes.css">
+</head>
+<body>
+    <nav class="tool-nav"><a href="index.html">Bindle</a> / <a href="capture-detail.html">dashboard</a></nav>
+
+    <header>
+        <div>
+            <h1>dashboard</h1>
+            <p>
+                <span class="badge method">GET</span>
+                <span class="badge completed">real screenshots</span>
+            </p>
+        </div>
+    </header>
+
+    <p class="muted">This run used Dusk.</p>
+
+    <div class="compare">
+        <figure>
+            <figcaption>Implementation</figcaption>
+            <div class="device device-desktop">
+                <div class="device-chrome">
+                    <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                    <span class="url">localhost/dashboard</span>
+                </div>
+                <div class="app">
+                    <div class="app-bar">
+                        <strong>Acme</strong>
+                        <span>Overview · Binds · Settings</span>
+                    </div>
+                    <div class="app-body">
+                        <div class="stat-row">
+                            <article class="stat">
+                                <p class="stat-label">Active binds</p>
+                                <p class="stat-value">24</p>
+                            </article>
+                            <article class="stat">
+                                <p class="stat-label">Queue</p>
+                                <p class="stat-value">3</p>
+                            </article>
+                            <article class="stat">
+                                <p class="stat-label">Errors</p>
+                                <p class="stat-value">0</p>
+                            </article>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </figure>
+        <figure>
+            <figcaption>Design</figcaption>
+            <div class="device device-desktop">
+                <div class="device-chrome">
+                    <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                    <span class="url">/designs/dashboard.png</span>
+                </div>
+                <div class="app app-design">
+                    <div class="app-bar">
+                        <strong>Acme</strong>
+                        <span>Overview · Binds · Settings</span>
+                    </div>
+                    <div class="app-body">
+                        <div class="stat-row">
+                            <article class="stat">
+                                <p class="stat-label">Active binds</p>
+                                <p class="stat-value">24 <span class="pill">ok</span></p>
+                            </article>
+                            <article class="stat">
+                                <p class="stat-label">Queue</p>
+                                <p class="stat-value">3</p>
+                            </article>
+                            <article class="stat">
+                                <p class="stat-label">Errors</p>
+                                <p class="stat-value">0</p>
+                            </article>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <form class="toolbar" method="get" action="design-compare.html">
+                <label class="visually-hidden" for="design">Design still URL</label>
+                <input id="design" type="url" name="design" placeholder="https://…">
+                <button type="submit">Attach</button>
+            </form>
+        </figure>
+    </div>
+</body>
+</html>

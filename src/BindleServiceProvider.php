@@ -8,6 +8,10 @@ use Illuminate\Contracts\Config\Repository;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Maryeperry\Bindle\Browser\DriverAvailability;
+use Maryeperry\Bindle\Composition\Artifacts\AcceptanceTestGenerator;
+use Maryeperry\Bindle\Composition\Artifacts\WireframeGenerator;
+use Maryeperry\Bindle\Composition\Planning\ReuseFirstRealizationPlanner;
+use Maryeperry\Bindle\Console\Commands\BindleComposeCommand;
 use Maryeperry\Bindle\Console\Commands\BindleErrorsCommand;
 use Maryeperry\Bindle\Console\Commands\BindleInstallCommand;
 use Maryeperry\Bindle\Console\Commands\BindleResetCommand;
@@ -80,6 +84,10 @@ final class BindleServiceProvider extends ServiceProvider
         $this->app->singleton(ScanPipeline::class);
         $this->app->bind(InspectionProvider::class, PhpInspectionProvider::class);
 
+        $this->app->singleton(ReuseFirstRealizationPlanner::class);
+        $this->app->singleton(WireframeGenerator::class);
+        $this->app->singleton(AcceptanceTestGenerator::class);
+
         $this->app->singleton(Bindle::class, function ($app) {
             return new Bindle(
                 $app->make(Environment::class),
@@ -108,6 +116,7 @@ final class BindleServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 BindleInstallCommand::class,
+                BindleComposeCommand::class,
                 BindleScanCommand::class,
                 BindleResetCommand::class,
                 BindleErrorsCommand::class,

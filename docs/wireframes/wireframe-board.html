@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>dashboard — Bindle</title>
+    <link rel="stylesheet" href="wireframes.css">
+</head>
+<body>
+    <nav class="tool-nav"><a href="index.html">Bindle</a> / board</nav>
+
+    <header>
+        <div>
+            <h1>dashboard</h1>
+            <p class="muted">Planned page. Not captured yet.</p>
+        </div>
+    </header>
+
+    <p class="states">
+        <a href="#empty">empty</a>
+        <a href="#loading">loading</a>
+        <a href="#error">error</a>
+        <a href="#populated">populated</a>
+    </p>
+
+    <div class="boards">
+        <section class="skeleton empty" id="empty" aria-label="empty">
+            <div class="skel-header"><span class="region-label">header</span></div>
+            <aside class="skel-aside"><span class="region-label">aside</span></aside>
+            <div class="skel-main">
+                <span class="region-label">stats</span>
+                <div class="skel-stats">
+                    <div class="skel-card"></div>
+                    <div class="skel-card"></div>
+                    <div class="skel-card"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="skeleton loading" id="loading" aria-label="loading">
+            <div class="skel-header"><span class="region-label">header</span></div>
+            <aside class="skel-aside"><span class="region-label">aside</span></aside>
+            <div class="skel-main">
+                <span class="region-label">stats</span>
+                <div class="skel-stats">
+                    <div class="skel-card"></div>
+                    <div class="skel-card"></div>
+                    <div class="skel-card"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="skeleton error" id="error" aria-label="error">
+            <div class="skel-header"><span class="region-label">header</span></div>
+            <aside class="skel-aside"><span class="region-label">aside</span></aside>
+            <div class="skel-main">
+                <span class="region-label">stats</span>
+                <div class="error">Could not load stats.</div>
+            </div>
+        </section>
+
+        <section class="skeleton" id="populated" aria-label="populated">
+            <div class="skel-header"><span class="region-label">header</span></div>
+            <aside class="skel-aside"><span class="region-label">aside</span></aside>
+            <div class="skel-main">
+                <span class="region-label">stats</span>
+                <div class="skel-stats">
+                    <div class="skel-card"></div>
+                    <div class="skel-card"></div>
+                    <div class="skel-card"></div>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>
