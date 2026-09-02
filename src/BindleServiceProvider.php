@@ -16,6 +16,8 @@ use Maryeperry\Bindle\Generators\MarkdownGenerator;
 use Maryeperry\Bindle\Http\InstallRunner;
 use Maryeperry\Bindle\Http\Middleware\EnsureLocalAndEnabled;
 use Maryeperry\Bindle\Http\ScanRunner;
+use Maryeperry\Bindle\Inspection\Contracts\InspectionProvider;
+use Maryeperry\Bindle\Inspection\PhpInspectionProvider;
 use Maryeperry\Bindle\Phrases\Dictionary;
 use Maryeperry\Bindle\Pipeline\ScanPipeline;
 use Maryeperry\Bindle\Routes\RouteEnumerator;
@@ -76,6 +78,7 @@ final class BindleServiceProvider extends ServiceProvider
         $this->app->singleton(InstallRunner::class);
 
         $this->app->singleton(ScanPipeline::class);
+        $this->app->bind(InspectionProvider::class, PhpInspectionProvider::class);
 
         $this->app->singleton(Bindle::class, function ($app) {
             return new Bindle(

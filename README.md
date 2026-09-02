@@ -60,6 +60,26 @@ php artisan bindle:scan --route=/users       # or by URI
 
 ## Admin panel (local only)
 
+## Code-inspection seam
+
+Bindle owns code-understanding evidence; a host such as Stacks supplies only a
+workspace identifier, checkout root, optional relative path, and revision. Resolve
+`Maryeperry\Bindle\Inspection\Contracts\InspectionProvider` from the container and
+pass an `InspectionRequest`. The default `PhpInspectionProvider` returns typed,
+non-persistent `InspectionSnapshot` evidence for PHP symbols and relationships plus
+Blade/Inertia resource discovery. Applications may bind another provider without
+changing the read model.
+
+The namespaced anonymous Blade components under
+`<x-bindle::inspection.*>` render symbol lists/rows, code outlines, inspection
+summaries, dependency diagrams with complete textual equivalents, route lists,
+component inventories, colocation findings, and ordinary-link inspection tabs.
+They are server-rendered and deliberately do not create a second Stacks symbol or
+inspection store.
+
+The precise Landing-to-Bindle behavior map is documented in
+[`docs/landing-inspection-parity.md`](docs/landing-inspection-parity.md).
+
 Bindle ships an optional web panel that lists every route and component on one
 page and gives you buttons to trigger a **full scan** or a **single-page scan** —
 each runs `bindle:scan` in the background while a status page polls for completion.

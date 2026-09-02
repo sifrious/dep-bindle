@@ -1,0 +1,3 @@
+<section aria-labelledby="{{ $id }}-title"><h2 id="{{ $id }}-title">Colocation inspection</h2>
+@if($findings === [])<p>Inspection completed with no colocation findings.</p>@else<ul class="bindle-record-list">@foreach($findings as $finding)<li><article><h3>{{ $finding['title'] }}</h3><p>{{ $finding['message'] }}</p>@if(isset($finding['url']))<a href="{{ $finding['url'] }}">View evidence for {{ $finding['title'] }}</a>@else<p><code>{{ $finding['source'] }}</code></p>@endif</article></li>@endforeach</ul>@endif
+@if(isset($exportUrl))<p><a href="{{ $exportUrl }}">Export inspection evidence</a></p>@endif</section>

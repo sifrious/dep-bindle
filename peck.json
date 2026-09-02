@@ -6,6 +6,7 @@
             "bem",
             "bindle",
             "callsite",
+            "colocation",
             "expr",
             "fpm",
             "fqcn",
