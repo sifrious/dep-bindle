@@ -1,0 +1,61 @@
+{
+    "schemaVersion": "bindle.application-requirements.v1",
+    "workspaceId": "ws_01HXAMPLENODE",
+    "revision": null,
+    "generatedAt": "2026-09-02T09:16:00+00:00",
+    "requirements": [
+        {
+            "name": "node",
+            "kind": "runtime",
+            "necessity": "required",
+            "confidence": "high",
+            "version": { "raw": ">=20", "normalized": "20.0.0" },
+            "evidence": [
+                {
+                    "strength": "manifest",
+                    "locator": { "relativePath": "package.json", "line": null, "pointer": "/engines/node" },
+                    "excerpt": ">=20",
+                    "note": null
+                },
+                {
+                    "strength": "version_file",
+                    "locator": { "relativePath": ".nvmrc", "line": 1, "pointer": null },
+                    "excerpt": "20.11.1",
+                    "note": null
+                }
+            ],
+            "setupHints": [
+                { "intent": "install_runtime", "subject": "node", "note": null }
+            ],
+            "conflicts": [],
+            "description": null
+        },
+        {
+            "name": "pnpm",
+            "kind": "package_manager",
+            "necessity": "required",
+            "confidence": "high",
+            "version": { "raw": "9.12.0", "normalized": "9.12.0" },
+            "evidence": [
+                {
+                    "strength": "lockfile",
+                    "locator": { "relativePath": "pnpm-lock.yaml", "line": 1, "pointer": null },
+                    "excerpt": "lockfileVersion: '9.0'",
+                    "note": null
+                },
+                {
+                    "strength": "manifest",
+                    "locator": { "relativePath": "package.json", "line": null, "pointer": "/packageManager" },
+                    "excerpt": "pnpm@9.12.0",
+                    "note": null
+                }
+            ],
+            "setupHints": [
+                { "intent": "install_package_manager", "subject": "pnpm", "note": null },
+                { "intent": "install_project_dependencies", "subject": "pnpm", "note": null }
+            ],
+            "conflicts": [],
+            "description": null
+        }
+    ]
+}

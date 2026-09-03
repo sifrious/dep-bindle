@@ -1,0 +1,140 @@
+{
+    "schemaVersion": "bindle.application-requirements.v1",
+    "workspaceId": "ws_01HXAMPLELARAVEL",
+    "revision": "9f25cdd9c7f4d583415cf39d1d3bc013dc47cf7a",
+    "generatedAt": "2026-09-02T09:15:00+00:00",
+    "requirements": [
+        {
+            "name": "php",
+            "kind": "runtime",
+            "necessity": "required",
+            "confidence": "high",
+            "version": { "raw": "^8.3", "normalized": "8.3.0" },
+            "evidence": [
+                {
+                    "strength": "manifest",
+                    "locator": { "relativePath": "composer.json", "line": null, "pointer": "/require/php" },
+                    "excerpt": "^8.3",
+                    "note": null
+                },
+                {
+                    "strength": "version_file",
+                    "locator": { "relativePath": ".tool-versions", "line": 1, "pointer": null },
+                    "excerpt": "php 8.2.10",
+                    "note": "Pin disagrees with the composer constraint."
+                }
+            ],
+            "setupHints": [
+                { "intent": "install_runtime", "subject": "php", "note": null }
+            ],
+            "conflicts": [
+                {
+                    "kind": "version_disagreement",
+                    "evidence": [
+                        {
+                            "strength": "manifest",
+                            "locator": { "relativePath": "composer.json", "line": null, "pointer": "/require/php" },
+                            "excerpt": "^8.3",
+                            "note": null
+                        },
+                        {
+                            "strength": "version_file",
+                            "locator": { "relativePath": ".tool-versions", "line": 1, "pointer": null },
+                            "excerpt": "php 8.2.10",
+                            "note": null
+                        }
+                    ],
+                    "note": "composer.json requires ^8.3; .tool-versions pins 8.2.10."
+                }
+            ],
+            "description": "Application language runtime."
+        },
+        {
+            "name": "composer",
+            "kind": "package_manager",
+            "necessity": "required",
+            "confidence": "high",
+            "version": null,
+            "evidence": [
+                {
+                    "strength": "lockfile",
+                    "locator": { "relativePath": "composer.lock", "line": null, "pointer": "/_readme" },
+                    "excerpt": "This file locks the dependencies of your project to a known state",
+                    "note": null
+                }
+            ],
+            "setupHints": [
+                { "intent": "install_package_manager", "subject": "composer", "note": null }
+            ],
+            "conflicts": [],
+            "description": null
+        },
+        {
+            "name": "postgresql",
+            "kind": "service",
+            "necessity": "required",
+            "confidence": "low",
+            "version": { "raw": "16", "normalized": null },
+            "evidence": [
+                {
+                    "strength": "config",
+                    "locator": { "relativePath": ".env.example", "line": 12, "pointer": null },
+                    "excerpt": "DB_CONNECTION=pgsql",
+                    "note": null
+                },
+                {
+                    "strength": "documentation",
+                    "locator": { "relativePath": "README.md", "line": 42, "pointer": null },
+                    "excerpt": "brew install postgresql@16",
+                    "note": "Prose only. Recorded as evidence, never as an executable action."
+                }
+            ],
+            "setupHints": [
+                { "intent": "ensure_service", "subject": "postgresql", "note": null },
+                { "intent": "create_database", "subject": "postgresql", "note": null }
+            ],
+            "conflicts": [],
+            "description": "Primary datastore."
+        },
+        {
+            "name": "DB_DATABASE",
+            "kind": "environment_variable",
+            "necessity": "required",
+            "confidence": "medium",
+            "version": null,
+            "evidence": [
+                {
+                    "strength": "config",
+                    "locator": { "relativePath": ".env.example", "line": 15, "pointer": null },
+                    "excerpt": "DB_DATABASE=laravel",
+                    "note": null
+                }
+            ],
+            "setupHints": [
+                { "intent": "configure_environment", "subject": "DB_DATABASE", "note": null }
+            ],
+            "conflicts": [],
+            "description": null
+        },
+        {
+            "name": "project-dependencies",
+            "kind": "build_step",
+            "necessity": "required",
+            "confidence": "high",
+            "version": null,
+            "evidence": [
+                {
+                    "strength": "lockfile",
+                    "locator": { "relativePath": "composer.lock", "line": null, "pointer": "/packages" },
+                    "excerpt": "128 locked packages",
+                    "note": null
+                }
+            ],
+            "setupHints": [
+                { "intent": "install_project_dependencies", "subject": "composer", "note": null }
+            ],
+            "conflicts": [],
+            "description": "Vendor directory must be installed before the app boots."
+        }
+    ]
+}

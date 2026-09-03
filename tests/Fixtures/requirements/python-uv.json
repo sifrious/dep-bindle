@@ -1,0 +1,66 @@
+{
+    "schemaVersion": "bindle.application-requirements.v1",
+    "workspaceId": "ws_01HXAMPLEPYTHON",
+    "revision": null,
+    "generatedAt": "2026-09-02T09:17:00+00:00",
+    "requirements": [
+        {
+            "name": "python",
+            "kind": "runtime",
+            "necessity": "required",
+            "confidence": "high",
+            "version": { "raw": ">=3.12", "normalized": "3.12.0" },
+            "evidence": [
+                {
+                    "strength": "manifest",
+                    "locator": { "relativePath": "pyproject.toml", "line": null, "pointer": "/project/requires-python" },
+                    "excerpt": ">=3.12",
+                    "note": null
+                }
+            ],
+            "setupHints": [
+                { "intent": "install_runtime", "subject": "python", "note": null }
+            ],
+            "conflicts": [],
+            "description": null
+        },
+        {
+            "name": "uv",
+            "kind": "package_manager",
+            "necessity": "required",
+            "confidence": "high",
+            "version": null,
+            "evidence": [
+                {
+                    "strength": "lockfile",
+                    "locator": { "relativePath": "uv.lock", "line": 1, "pointer": null },
+                    "excerpt": "version = 1",
+                    "note": null
+                }
+            ],
+            "setupHints": [
+                { "intent": "install_package_manager", "subject": "uv", "note": null }
+            ],
+            "conflicts": [],
+            "description": null
+        },
+        {
+            "name": "ruff",
+            "kind": "system_tool",
+            "necessity": "dev_only",
+            "confidence": "medium",
+            "version": null,
+            "evidence": [
+                {
+                    "strength": "automation",
+                    "locator": { "relativePath": ".github/workflows/lint.yml", "line": 18, "pointer": null },
+                    "excerpt": "uv run ruff check .",
+                    "note": null
+                }
+            ],
+            "setupHints": [],
+            "conflicts": [],
+            "description": null
+        }
+    ]
+}
