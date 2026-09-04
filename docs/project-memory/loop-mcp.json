@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project": "Bindle Loop MCP contracts",
-  "updated_at": "2026-09-04T13:30:00Z",
+  "updated_at": "2026-09-04T13:24:23Z",
   "facts": [
     {
       "id": "F-LOOP-001",
@@ -80,7 +80,7 @@
       "id": "MME-2272",
       "name": "Provider-neutral Loop MCP resources and stable reference schemas",
       "stage": "MVP",
-      "status": "in_progress"
+      "status": "complete"
     }
   ],
   "workflows": [
