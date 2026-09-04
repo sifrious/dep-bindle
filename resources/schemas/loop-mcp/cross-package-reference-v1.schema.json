@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sifrious.com/loop-mcp/cross-package-reference-v1.schema.json",
+  "title": "Sifrious cross-package reference v1",
+  "description": "The existing sifrious/reference-contract wire representation. This schema does not create an identity.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "contract_version",
+    "owner",
+    "type",
+    "id",
+    "object_version",
+    "provenance"
+  ],
+  "properties": {
+    "contract": {
+      "const": "sifrious.cross-package-reference"
+    },
+    "contract_version": {
+      "const": 1
+    },
+    "owner": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]*/[a-z0-9][a-z0-9._-]*$"
+    },
+    "type": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9._-]*$"
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^\\S+$"
+    },
+    "object_version": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "provenance": {
+      "oneOf": [
+        {
+          "$ref": "#"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  }
+}

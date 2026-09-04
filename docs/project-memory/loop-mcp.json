@@ -1,0 +1,111 @@
+{
+  "schema_version": 1,
+  "project": "Bindle Loop MCP contracts",
+  "updated_at": "2026-09-04T13:24:23Z",
+  "facts": [
+    {
+      "id": "F-LOOP-001",
+      "statement": "Elwin, Titan, Logres, Funes, and Stacks already own the canonical identities composed by the Loop."
+    },
+    {
+      "id": "F-LOOP-002",
+      "statement": "sifrious/reference-contract v1 and sifrious/authorization-contract v1 are the shared portable reference and authorization wire contracts."
+    },
+    {
+      "id": "F-LOOP-003",
+      "statement": "MME-2273 prefers a composed Loop read model over a generic Loop database identity."
+    }
+  ],
+  "assumptions": [
+    {
+      "id": "A-LOOP-001",
+      "statement": "The MME-2273 application projection will select domain field names and canonical owner references without requiring Bindle to import sibling domain packages."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D-LOOP-001",
+      "decision": "Define one versioned resource envelope and one MCP read adapter for all Loop resource views.",
+      "rationale": "The envelope stabilizes transport, authorization, provenance, and uncertainty while leaving domain fields and state machines with their owners.",
+      "alternatives": [
+        "Create one copied DTO per sibling domain object",
+        "Create a generic persisted Loop model"
+      ]
+    },
+    {
+      "id": "D-LOOP-002",
+      "decision": "Address resources with canonical CrossPackageReference coordinates.",
+      "rationale": "Existing package identity remains authoritative and local paths or provider-native IDs cannot become repository identity."
+    },
+    {
+      "id": "D-LOOP-003",
+      "decision": "Concealed and forbidden resources contain no reference, projection fields, relation counts, or completion metadata.",
+      "rationale": "Authorization failures must not disclose a private relation neighborhood."
+    }
+  ],
+  "constraints": [
+    "This ticket exposes read-only MCP resources and no mutation tools.",
+    "Bindle does not define sibling domain statuses or persistence.",
+    "Facts, deterministic derivations, and AI interpretations remain separate.",
+    "Unknown and redacted state is explicit and carries no hidden value.",
+    "Provider-native IDs remain external identifiers.",
+    "Paths may describe an authorized checkout but never identify a repository or Loop resource."
+  ],
+  "open_questions": [
+    {
+      "id": "Q-LOOP-001",
+      "question": "Which existing MME-2273 identity will serve as the composed Loop resource reference when no generic Loop identity is needed?"
+    },
+    {
+      "id": "Q-LOOP-002",
+      "question": "Will epic and phase resolve directly to Titan identities or to application-owned projection identities?"
+    }
+  ],
+  "glossary": [
+    {
+      "term": "Resource view type",
+      "definition": "An MCP presentation category such as task or evidence; it is not a canonical domain type."
+    },
+    {
+      "term": "Canonical reference",
+      "definition": "A sifrious.cross-package-reference naming the package that owns an object, its domain type, opaque ID, and optional object version."
+    },
+    {
+      "term": "Concealed read",
+      "definition": "A denied read represented as missing with no private reference, count, relation, or state metadata."
+    }
+  ],
+  "features": [
+    {
+      "id": "MME-2272",
+      "name": "Provider-neutral Loop MCP resources and stable reference schemas",
+      "stage": "MVP",
+      "status": "complete"
+    }
+  ],
+  "workflows": [
+    {
+      "id": "W-LOOP-001",
+      "name": "Authorized Loop resource read",
+      "states": [
+        "canonical_reference_requested",
+        "domain_authorization_decided",
+        "projection_built_or_concealed",
+        "canonical_json_serialized",
+        "mcp_resource_returned"
+      ]
+    }
+  ],
+  "content_opportunities": [
+    {
+      "id": "C-LOOP-001",
+      "format": "post",
+      "user_problem": "MCP schemas can accidentally become a second domain model.",
+      "concept": "Stabilize references, authorization, and epistemic labels while leaving lifecycle semantics in their owning packages.",
+      "technology": "PHP, MCP resources, JSON Schema",
+      "project_context": "Burdgen Loop",
+      "audience": "package and protocol designers",
+      "hook": "A stable transport contract does not need to own the state it exposes."
+    }
+  ]
+}

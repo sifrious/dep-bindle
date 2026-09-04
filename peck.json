@@ -3,14 +3,18 @@
     "ignore": {
         "words": [
             "attr",
+            "availabilities",
             "bem",
             "bindle",
+            "burdgeon",
             "callsite",
+            "canonicalize",
             "colocation",
             "expr",
             "fpm",
             "fqcn",
             "js",
+            "mcp",
             "nohup",
             "parsers",
             "php",
@@ -18,8 +22,11 @@
             "sha",
             "subprocess",
             "substring",
+            "symlink",
             "viewport",
-            "vue"
+            "vue",
+            "wireframe",
+            "wireframes"
         ]
     }
 }

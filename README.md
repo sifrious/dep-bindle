@@ -7,6 +7,9 @@
 Bindle supports both reverse UI inspection and a safe forward composition path.
 See [Forward composition](docs/FORWARD-COMPOSITION.md) for behavior contracts,
 reuse-first planning, dry-run scaffolding, and real-browser evidence rules.
+It also defines [provider-neutral Loop MCP read contracts](docs/LOOP-MCP.md)
+over canonical cross-package references. These contracts expose resources only;
+they do not register mutation tools or create a parallel Loop domain.
 
 A local-only Laravel package that screenshots every page in your app, enumerates every component and prop across **Blade, Livewire, Alpine, Vue, React, and Svelte** (in both Inertia and non-Inertia projects), persists the whole graph in a self-contained SQLite database, and writes Markdown docs aimed at AI coding agents — **no AI is used to generate them**. The Markdown is composed from a hand-curated phrase dictionary.
 
