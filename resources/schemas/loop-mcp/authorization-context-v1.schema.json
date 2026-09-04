@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sifrious.com/loop-mcp/authorization-context-v1.schema.json",
+  "title": "Sifrious authorization context v1",
+  "description": "The existing sifrious/authorization-contract context representation. It carries identity and isolation scope; it does not grant access.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "contract_version",
+    "actor",
+    "tenant",
+    "correlation",
+    "provenance"
+  ],
+  "properties": {
+    "contract": {
+      "const": "sifrious.authorization-context"
+    },
+    "contract_version": {
+      "const": 1
+    },
+    "actor": {
+      "$ref": "#/$defs/actor"
+    },
+    "tenant": {
+      "$ref": "#/$defs/tenant"
+    },
+    "correlation": {
+      "$ref": "#/$defs/nullableReference"
+    },
+    "provenance": {
+      "$ref": "#/$defs/nullableReference"
+    }
+  },
+  "$defs": {
+    "reference": {
+      "$ref": "cross-package-reference-v1.schema.json"
+    },
+    "nullableReference": {
+      "oneOf": [
+        {
+          "$ref": "cross-package-reference-v1.schema.json"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "actor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contract",
+        "contract_version",
+        "actor",
+        "kind",
+        "acting_for",
+        "originating_service",
+        "provenance"
+      ],
+      "properties": {
+        "contract": {
+          "const": "sifrious.actor-context"
+        },
+        "contract_version": {
+          "const": 1
+        },
+        "actor": {
+          "$ref": "#/$defs/reference"
+        },
+        "kind": {
+          "enum": [
+            "human",
+            "service",
+            "agent",
+            "system"
+          ]
+        },
+        "acting_for": {
+          "$ref": "#/$defs/nullableReference"
+        },
+        "originating_service": {
+          "$ref": "#/$defs/nullableReference"
+        },
+        "provenance": {
+          "$ref": "#/$defs/nullableReference"
+        }
+      }
+    },
+    "tenant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contract",
+        "contract_version",
+        "kind",
+        "tenant"
+      ],
+      "properties": {
+        "contract": {
+          "const": "sifrious.tenant-scope"
+        },
+        "contract_version": {
+          "const": 1
+        },
+        "kind": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9._-]*$"
+        },
+        "tenant": {
+          "$ref": "#/$defs/nullableReference"
+        }
+      }
+    }
+  }
+}

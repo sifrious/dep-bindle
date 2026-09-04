@@ -21,6 +21,8 @@
         "illuminate/view": "^11.0|^12.0|^13.0",
         "laravel/dusk": "^8.0|^9.0",
         "nikic/php-parser": "^5.0",
+        "sifrious/authorization-contract": "dev-main",
+        "sifrious/reference-contract": "^1.0",
         "symfony/css-selector": "^7.0|^8.0",
         "symfony/dom-crawler": "^7.0|^8.0"
     },
@@ -28,12 +30,14 @@
         "inertiajs/inertia-laravel": "^2.0",
         "laravel/pint": "^1.24.0",
         "livewire/livewire": "^3.0",
+        "opis/json-schema": "^2.6",
         "orchestra/testbench": "^9.0|^10.0|^11.0",
         "peckphp/peck": "^0.1.3",
         "pestphp/pest": "^4.1.0",
         "pestphp/pest-plugin-laravel": "^4.0|^3.0",
         "phpstan/phpstan": "^2.1.26",
         "rector/rector": "^2.1.7",
+        "sifrious/harness-contract-fixtures": "^1.1",
         "symfony/var-dumper": "^7.3.3"
     },
     "autoload": {
@@ -80,5 +84,19 @@
             "@test:types",
             "@test:refactor"
         ]
+    },
+    "repositories": {
+        "harness-contract-fixtures": {
+            "type": "vcs",
+            "url": "https://github.com/sifrious/dep-harness-contract-fixtures.git"
+        },
+        "authorization-contract": {
+            "type": "vcs",
+            "url": "https://github.com/sifrious/dep-authorization-contract.git"
+        },
+        "reference-contract": {
+            "type": "vcs",
+            "url": "https://github.com/sifrious/dep-reference-contract.git"
+        }
     }
 }

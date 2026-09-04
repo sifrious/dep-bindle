@@ -1,0 +1,264 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sifrious.com/loop-mcp/resource-v1.schema.json",
+  "title": "Provider-neutral Loop MCP resource v1",
+  "description": "An authorized read projection over canonical package-owned identities.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "contract_version",
+    "resource_type",
+    "uri",
+    "resolution",
+    "reference",
+    "authorization",
+    "authorization_decision",
+    "facts",
+    "deterministic_derivations",
+    "ai_interpretations"
+  ],
+  "properties": {
+    "contract": {
+      "const": "sifrious.loop-mcp-resource"
+    },
+    "contract_version": {
+      "const": 1
+    },
+    "resource_type": {
+      "enum": [
+        "loop",
+        "plan",
+        "epic",
+        "phase",
+        "task",
+        "step",
+        "run",
+        "attempt",
+        "dependency",
+        "blocker",
+        "question",
+        "decision",
+        "verification-plan",
+        "evidence",
+        "execution-target",
+        "workspace-reference",
+        "terminal-outcome"
+      ]
+    },
+    "uri": {
+      "type": "string",
+      "pattern": "^loop://resources/[a-z][a-z-]*\\?owner="
+    },
+    "resolution": {
+      "enum": [
+        "available",
+        "unknown",
+        "missing",
+        "forbidden"
+      ]
+    },
+    "reference": {
+      "$ref": "#/$defs/nullableReference"
+    },
+    "authorization": {
+      "$ref": "authorization-context-v1.schema.json"
+    },
+    "authorization_decision": {
+      "$ref": "#/$defs/authorizationDecision"
+    },
+    "facts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/field"
+      }
+    },
+    "deterministic_derivations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/field"
+      }
+    },
+    "ai_interpretations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/field"
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "resolution": {
+            "enum": [
+              "missing",
+              "forbidden"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "reference": {
+            "type": "null"
+          },
+          "facts": {
+            "maxItems": 0
+          },
+          "deterministic_derivations": {
+            "maxItems": 0
+          },
+          "ai_interpretations": {
+            "maxItems": 0
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "resolution": {
+            "const": "unknown"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "facts": {
+            "maxItems": 0
+          },
+          "deterministic_derivations": {
+            "maxItems": 0
+          },
+          "ai_interpretations": {
+            "maxItems": 0
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "nullableReference": {
+      "oneOf": [
+        {
+          "$ref": "cross-package-reference-v1.schema.json"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "authorizationDecision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contract",
+        "contract_version",
+        "permitted",
+        "code",
+        "disclosure",
+        "policy_version",
+        "provenance"
+      ],
+      "properties": {
+        "contract": {
+          "const": "sifrious.authorization-decision"
+        },
+        "contract_version": {
+          "const": 1
+        },
+        "permitted": {
+          "type": "boolean"
+        },
+        "code": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9._-]*$"
+        },
+        "disclosure": {
+          "enum": [
+            "explicit_forbidden",
+            "conceal_as_missing"
+          ]
+        },
+        "policy_version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "provenance": {
+          "$ref": "#/$defs/nullableReference"
+        }
+      }
+    },
+    "field": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "availability",
+        "value",
+        "basis",
+        "method",
+        "producer"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9._-]*$"
+        },
+        "availability": {
+          "enum": [
+            "known",
+            "unknown",
+            "redacted"
+          ]
+        },
+        "value": true,
+        "basis": {
+          "type": "array",
+          "items": {
+            "$ref": "cross-package-reference-v1.schema.json"
+          }
+        },
+        "method": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "producer": {
+          "$ref": "#/$defs/nullableReference"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "availability": {
+                "enum": [
+                  "unknown",
+                  "redacted"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "value": {
+                "type": "null"
+              },
+              "basis": {
+                "maxItems": 0
+              },
+              "producer": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
