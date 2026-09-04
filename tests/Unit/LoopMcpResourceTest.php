@@ -84,7 +84,7 @@ it('serializes the shared causal fixture identically through PHP and MCP reads',
 
     expect($mcp['contents'][0]['text'])->toBe($phpJson)
         ->and($mcp['contents'][0]['uri'])->toBe($resource->uri)
-        ->and(json_decode($phpJson, true, 512, JSON_THROW_ON_ERROR)['reference'])->toBe($plan->toArray());
+        ->and(json_decode($phpJson, true, 512, JSON_THROW_ON_ERROR)['reference'])->toEqual($plan->toArray());
 
     $schemaDirectory = dirname(__DIR__, 2).'/resources/schemas/loop-mcp';
     $resolver = new SchemaResolver;

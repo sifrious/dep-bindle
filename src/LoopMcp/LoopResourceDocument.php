@@ -178,7 +178,7 @@ final readonly class LoopResourceDocument implements JsonSerializable
         $names = [];
 
         foreach ($fields as $field) {
-            if (! $field instanceof LoopResourceField || $field->kind !== $expectedKind) {
+            if ($field->kind !== $expectedKind) {
                 throw new InvalidArgumentException("Loop resource {$expectedKind} fields must use their matching constructor.");
             }
             if (isset($names[$field->name])) {
