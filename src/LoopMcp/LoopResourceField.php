@@ -32,7 +32,7 @@ final readonly class LoopResourceField implements JsonSerializable
             throw new InvalidArgumentException('Loop resource fields require a stable kind, name, and availability.');
         }
 
-        if ($availability !== 'known' && ($value !== null || $basis !== [] || $producer !== null)) {
+        if ($availability !== 'known' && ($value !== null || $basis !== [] || $producer instanceof CrossPackageReference)) {
             throw new InvalidArgumentException('Unknown and redacted fields cannot carry values, references, or producers.');
         }
 
@@ -40,11 +40,11 @@ final readonly class LoopResourceField implements JsonSerializable
             throw new InvalidArgumentException('Deterministic derivations must name their method.');
         }
 
-        if ($kind === 'ai-interpretation' && $availability === 'known' && $producer === null) {
+        if ($kind === 'ai-interpretation' && $availability === 'known' && ! $producer instanceof CrossPackageReference) {
             throw new InvalidArgumentException('Known AI interpretations must identify their producer.');
         }
 
-        if ($kind === 'fact' && ($method !== null || $producer !== null)) {
+        if ($kind === 'fact' && ($method !== null || $producer instanceof CrossPackageReference)) {
             throw new InvalidArgumentException('Facts cannot masquerade as derivations or interpretations.');
         }
 
