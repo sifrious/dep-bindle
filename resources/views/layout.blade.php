@@ -39,10 +39,48 @@
         .badge.failed { background: #fde8e8; color: #8a1f1f; }
         .badge.driver-null { background: #ececf1; color: #55555f; }
         .badge.driver-dusk { background: #def7e5; color: #1c7c3c; }
+        .badge.state-empty { background: #ececf1; color: #55555f; }
+        .badge.state-loading { background: #fff4d6; color: #8a6d00; }
+        .badge.state-error { background: #fde8e8; color: #8a1f1f; }
+        .badge.state-populated { background: #def7e5; color: #1c7c3c; }
         .banner { background: #fff4d6; border: 1px solid #f0d98a; color: #6e5600; padding: .75rem 1rem; border-radius: 8px; margin: 1rem 0; }
         .error { background: #fde8e8; border: 1px solid #f5b5b5; color: #8a1f1f; padding: .75rem 1rem; border-radius: 8px; margin: 1rem 0; }
         .notice { background: #def7e5; border: 1px solid #a5dfba; color: #14532d; padding: .75rem 1rem; border-radius: 8px; margin: 1rem 0; }
         .toolbar { margin: 1rem 0; }
+        .state-link {
+            display: inline-block;
+            margin-right: .35rem;
+            margin-bottom: .35rem;
+            padding: .25rem .6rem;
+            border: 1px solid #c9c9d2;
+            border-radius: 999px;
+            text-decoration: none;
+            color: inherit;
+            background: #fff;
+        }
+        .state-link.active {
+            border-color: #2952cc;
+            background: #eef2ff;
+            color: #2952cc;
+            font-weight: 600;
+        }
+        .board-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: .75rem;
+        }
+        .region-card {
+            background: #fff;
+            border: 1px solid #e6e6ea;
+            border-radius: 8px;
+            padding: .75rem;
+        }
+        .region-card h3 { margin: 0 0 .45rem; font-size: .95rem; }
+        .region-card p { margin: .3rem 0; }
+        .region-card.state-empty { border-style: dashed; }
+        .region-card.state-loading { box-shadow: inset 0 0 0 2px #fff4d6; }
+        .region-card.state-error { box-shadow: inset 0 0 0 2px #fde8e8; }
+        .region-card.state-populated { box-shadow: inset 0 0 0 2px #def7e5; }
         .driver-form { display: flex; align-items: center; gap: .4rem; flex-wrap: wrap; }
         select { font: inherit; padding: .3rem .4rem; border: 1px solid #c9c9d2; border-radius: 6px; background: #fff; color: inherit; }
         pre { margin: 0; white-space: pre-wrap; word-break: break-word; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .85em; }

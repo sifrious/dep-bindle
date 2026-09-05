@@ -119,6 +119,11 @@ Then visit **`/_bindle`**. Configuration lives in the `panel` block of
 | `panel.poll_seconds` (`BINDLE_PANEL_POLL`) | `2` | Status-page refresh interval while a scan runs. |
 | `log_path` (`BINDLE_LOG_PATH`) | `.bindle/scan.log` | Where panel-spawned scans write stdout and stderr. The status page shows the tail. |
 
+The panel also includes a **wireframe board** view (`/_bindle/wireframe-board`) for
+documents-first composition notes: named regions, explicit states
+(`empty`, `loading`, `error`, `populated`), and state notes. This is intentionally
+HTML+CSS only (no JS canvas/drawing model).
+
 The panel is gated three ways: the provider only registers the routes in `local`
 with the flag on, a request-time middleware re-checks and returns **404** otherwise,
 and `ScanRunner` calls `Environment::assertSafe()` before spawning any scan.

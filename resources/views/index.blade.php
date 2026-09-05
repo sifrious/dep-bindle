@@ -5,6 +5,9 @@
         <div>
             <h1>Bindle</h1>
             <p class="muted">Local route &amp; component inventory.</p>
+            <p class="muted">
+                <a href="{{ route('bindle.panel.wireframe-board') }}">Open wireframe board view &rarr;</a>
+            </p>
         </div>
         <form method="POST" action="{{ route('bindle.panel.scan-all') }}" class="driver-form">
             @csrf

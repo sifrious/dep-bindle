@@ -16,3 +16,5 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   status page shows the tail plus any errors the run recorded
 - `bindle:scan --driver=dusk` checks its preconditions up front and diagnoses the
   common Chrome/ChromeDriver/connection failures
+- `/_bindle/wireframe-board` adds a documents-first board view with named regions
+  and explicit `empty` / `loading` / `error` / `populated` states
