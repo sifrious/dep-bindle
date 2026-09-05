@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace Maryeperry\Bindle\Http\Controllers;
 
 use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\BinaryFileResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Maryeperry\Bindle\Browser\DriverAvailability;
 use Maryeperry\Bindle\Browser\DriverKind;
 use Maryeperry\Bindle\Http\InstallRunner;
@@ -17,7 +20,9 @@ use Maryeperry\Bindle\Storage\Database\DatabaseManager;
 use Maryeperry\Bindle\Storage\Models\Component;
 use Maryeperry\Bindle\Storage\Models\ErrorLog;
 use Maryeperry\Bindle\Storage\Models\Page;
+use Maryeperry\Bindle\Storage\Models\PageComponent;
 use Maryeperry\Bindle\Storage\Models\Run;
+use Maryeperry\Bindle\Storage\Models\Screenshot;
 
 /**
  * Local-only web admin panel. Lists every route and component and lets the
@@ -137,6 +142,67 @@ final readonly class PanelController
         return $this->statusView(null);
     }
 
+    public function showPageCapture(int $page): View|RedirectResponse
+    {
+        $this->db->ensureSchema();
+
+        $capture = Page::query()->with('run')->find($page);
+        if ($capture === null) {
+            return redirect()->route('bindle.panel.index')->with('bindle_error', "Unknown capture id: {$page}");
+        }
+
+        $screenshots = Screenshot::query()
+            ->where('subject_type', 'page')
+            ->where('subject_id', $capture->id)
+            ->orderBy('id')
+            ->get();
+
+        $componentsOnPage = PageComponent::query()
+            ->where('page_id', $capture->id)
+            ->with(['component.props', 'component.variants'])
+            ->orderBy('depth')
+            ->orderBy('id')
+            ->get();
+
+        $errors = ErrorLog::query()
+            ->where('run_id', $capture->run_id)
+            ->where(function (Builder $q) use ($capture): void {
+                $q->where(function (Builder $subject) use ($capture): void {
+                    $subject->where('subject_type', 'page')
+                        ->where('subject_id', $capture->id);
+                })->orWhereNull('subject_type');
+            })
+            ->orderBy('id')
+            ->get();
+
+        return view('bindle::capture-page', [
+            'page' => $capture,
+            'run' => $capture->run,
+            'screenshots' => $screenshots,
+            'desktopScreenshot' => $screenshots->firstWhere('viewport_label', 'desktop') ?? $screenshots->first(),
+            'mobileScreenshot' => $screenshots->firstWhere('viewport_label', 'mobile')
+                ?? $screenshots->first(fn (Screenshot $s): bool => $s->viewport_label !== 'desktop'),
+            'componentsOnPage' => $componentsOnPage,
+            'errors' => $errors,
+            'semanticSummary' => $this->semanticSummary($capture),
+            'accessibilityNotes' => $this->accessibilityNotes($capture->run, $capture, $errors),
+        ]);
+    }
+
+    public function screenshot(int $screenshot): BinaryFileResponse
+    {
+        $this->db->ensureSchema();
+
+        $shot = Screenshot::query()->find($screenshot);
+        if ($shot === null || ! is_file($shot->path)) {
+            abort(404);
+        }
+
+        return response()->file($shot->path, [
+            'Cache-Control' => 'no-store, no-cache, must-revalidate, max-age=0',
+        ]);
+    }
+
     private function statusView(?Run $run): View
     {
         $problems = $run === null
@@ -154,6 +220,55 @@ final readonly class PanelController
             'logTail' => $this->runner->tailLog(),
             'logPath' => $this->runner->logPath(),
         ]);
+    }
+
+    private function semanticSummary(Page $page): ?string
+    {
+        $path = rtrim((string) config('bindle.output_path', ''), '/')
+            ."/pages/{$page->slug}/{$page->slug}-description.md";
+
+        if (! is_file($path)) {
+            return null;
+        }
+
+        $raw = (string) file_get_contents($path);
+        $clean = trim(preg_replace('/^#.*\n/m', '', $raw) ?? '');
+        if ($clean === '') {
+            return null;
+        }
+
+        return substr($clean, 0, 700);
+    }
+
+    /**
+     * @param  Collection<int, ErrorLog>  $errors
+     * @return array<int, string>
+     */
+    private function accessibilityNotes(?Run $run, Page $page, Collection $errors): array
+    {
+        $notes = [];
+
+        if ($run === null || ! $run->driverKind()->producesRealScreenshots()) {
+            $notes[] = 'Accessibility checks are limited in this run because the placeholder driver uses empty DOM captures.';
+        }
+
+        if ($page->html_hash === null) {
+            $notes[] = 'No DOM fingerprint was saved for this capture, so semantic checks could not be derived.';
+        }
+
+        $a11yErrors = $errors->filter(static function (ErrorLog $error): bool {
+            return preg_match('/a11y|accessib|aria|contrast|alt text|label/i', $error->message) === 1;
+        });
+
+        foreach ($a11yErrors as $error) {
+            $notes[] = $error->message;
+        }
+
+        if ($notes === []) {
+            $notes[] = 'No accessibility-specific scan notes were recorded for this capture.';
+        }
+
+        return $notes;
     }
 
     /**

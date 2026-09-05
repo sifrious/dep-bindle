@@ -90,6 +90,9 @@ The precise Landing-to-Bindle behavior map is documented in
 Bindle ships an optional web panel that lists every route and component on one
 page and gives you buttons to trigger a **full scan** or a **single-page scan** —
 each runs `bindle:scan` in the background while a status page polls for completion.
+Scanned routes also expose a **capture detail** screen from the inventory table,
+showing desktop/mobile screenshot slots, page component props/variants, semantic
+summary, accessibility notes, and recorded scan errors for that capture.
 
 Each scan form carries a **driver dropdown**. Dusk only appears in it once every
 requirement for real screenshots is met; until then the panel says so plainly,
@@ -100,6 +103,8 @@ placeholders.
 
 Every run records the driver that produced it, shown as a badge on the panel and
 the status page, so a placeholder run cannot be mistaken for a real one later.
+The capture detail screen keeps that invariant: placeholder runs are explicitly
+labeled and rendered as placeholder artifacts (not real-looking screenshots).
 
 It is **off by default** and only ever registers its routes when `APP_ENV=local`.
 Turn it on in `.env`:
